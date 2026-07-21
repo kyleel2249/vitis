@@ -30,7 +30,7 @@ const FOOTER_LINKS = {
     links: [
       { label: 'Help Center', href: '/help' },
       { label: 'Contact Us', href: '/contact' },
-      { label: 'Order Status', href: '/account/orders' },
+      { label: 'Order Status', href: '/order-status' },
       { label: 'Returns & Refunds', href: '/returns' },
       { label: 'Shipping Info', href: '/shipping' },
       { label: 'Size Guide', href: '/size-guide' },
