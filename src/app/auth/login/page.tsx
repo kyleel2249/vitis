@@ -5,8 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Zap, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
 
 function LoginForm() {
   const router = useRouter();
@@ -21,15 +19,10 @@ function LoginForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      // Sign in with Firebase
-      const credential = await signInWithEmailAndPassword(auth, email, password);
-      const idToken = await credential.user.getIdToken();
-
-      // Exchange token for session cookie
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
+        body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
       if (data.success) {
@@ -39,15 +32,8 @@ function LoginForm() {
       } else {
         toast.error(data.error || 'Sign in failed');
       }
-    } catch (err: any) {
-      const code = err?.code || '';
-      if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
-        toast.error('Invalid email or password');
-      } else if (code === 'auth/too-many-requests') {
-        toast.error('Too many attempts. Please try again later.');
-      } else {
-        toast.error('Sign in failed. Please try again.');
-      }
+    } catch {
+      toast.error('Sign in failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -99,11 +85,19 @@ function LoginForm() {
               {loading ? 'Signing in…' : 'Sign In'} {!loading && <ArrowRight className="w-5 h-5" />}
             </button>
           </form>
+
+          {/* Demo accounts hint */}
+          <div className="mt-6 p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-500 space-y-1">
+            <p className="font-semibold text-gray-600">Demo accounts (password: demo123)</p>
+            <p>Customer: customer@demo.com</p>
+            <p>Vendor: vendor@demo.com</p>
+            <p>Admin: admin@demo.com</p>
+          </div>
         </div>
 
         <p className="text-center text-sm text-gray-500 mt-6">
-          Don&apos;t have an account?{' '}
-          <Link href="/auth/register" className="text-primary-600 font-semibold hover:underline">Create one</Link>
+          New to Vitis?{' '}
+          <Link href="/auth/register" className="text-primary-600 font-semibold hover:underline">Create account</Link>
         </p>
       </motion.div>
     </div>

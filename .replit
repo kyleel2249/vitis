@@ -1,2 +1,43 @@
+modules = ["nodejs-20", "web"]
+[agent]
+expertMode = true
+
 [nix]
 channel = "stable-25_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start App"
+
+[[workflows.workflow]]
+name = "Start App"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node scripts/migrate.js && node scripts/seed.js && npm run dev"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+FIREBASE_CLIENT_EMAIL = "firebase-adminsdk-fbsvc@sale-ecommerce.iam.gserviceaccount.com"
+FIREBASE_PROJECT_ID = "sale-ecommerce"
+NEXT_PUBLIC_FIREBASE_API_KEY = "AIzaSyD1xB-pTbSEjrddi9uLssB7ms0BdQX5id4"
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN = "sale-ecommerce.firebaseapp.com"
+NEXT_PUBLIC_FIREBASE_PROJECT_ID = "sale-ecommerce"

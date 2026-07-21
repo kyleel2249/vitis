@@ -1,7 +1,26 @@
 const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcryptjs');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+async function seedDemoUsers(client) {
+  const DEMO_PASSWORD_HASH = await bcrypt.hash('demo123', 12);
+  const demoUsers = [
+    { email: 'customer@demo.com', name: 'Demo Customer', role: 'customer' },
+    { email: 'vendor@demo.com',   name: 'Demo Vendor',   role: 'vendor' },
+    { email: 'admin@demo.com',    name: 'Demo Admin',    role: 'admin' },
+  ];
+  for (const u of demoUsers) {
+    await client.query(
+      `INSERT INTO users (id, email, name, password_hash, role, is_active, created_at)
+       VALUES ($1, $2, $3, $4, $5, true, NOW())
+       ON CONFLICT (email) DO NOTHING`,
+      [uuidv4(), u.email, u.name, DEMO_PASSWORD_HASH, u.role]
+    );
+  }
+  console.log('  → Demo users ready (admin / vendor / customer — password: demo123)');
+}
 
 const CATEGORIES = [
   { id: uuidv4(), name: 'Electronics', slug: 'electronics', icon: '💻', color: '#3b5bf5', sort_order: 1 },
@@ -223,9 +242,14 @@ async function seed() {
     const { rows } = await client.query('SELECT COUNT(*)::int AS count FROM products');
     if (rows[0].count > 0) {
       console.log('✅ Database already seeded — skipping.');
+      // Still ensure demo users exist even if products are already seeded
+      await seedDemoUsers(client);
       return;
     }
     console.log('🌱 Seeding database...');
+
+    // Demo users (admin, vendor, customer — password: demo123)
+    await seedDemoUsers(client);
 
     // Categories
     console.log('  → Seeding categories...');

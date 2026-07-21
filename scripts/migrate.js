@@ -270,31 +270,7 @@ async function migrate() {
       CREATE INDEX IF NOT EXISTS idx_wishlists_user ON wishlists(user_id);
     `);
 
-    // Remove demo accounts (cascade through dependent records)
-    const demoEmails = ['admin@demo.com','vendor@demo.com','customer@demo.com','sarah@demo.com','david@demo.com'];
-    const { rows: demoUsers } = await client.query('SELECT id FROM users WHERE email = ANY($1)', [demoEmails]);
-    if (demoUsers.length > 0) {
-      const demoIds = demoUsers.map(u => u.id);
-      const { rows: demoVendors } = await client.query('SELECT id FROM vendors WHERE user_id = ANY($1)', [demoIds]);
-      const demoVendorIds = demoVendors.map(v => v.id);
-      if (demoVendorIds.length > 0) {
-        await client.query('DELETE FROM products WHERE vendor_id = ANY($1)', [demoVendorIds]);
-        await client.query('DELETE FROM vendors WHERE id = ANY($1)', [demoVendorIds]);
-      }
-      const { rows: demoOrders } = await client.query('SELECT id FROM orders WHERE user_id = ANY($1)', [demoIds]);
-      if (demoOrders.length > 0) {
-        const demoOrderIds = demoOrders.map(o => o.id);
-        await client.query('DELETE FROM order_items WHERE order_id = ANY($1)', [demoOrderIds]);
-        await client.query('DELETE FROM orders WHERE id = ANY($1)', [demoOrderIds]);
-      }
-      await client.query('DELETE FROM reviews WHERE user_id = ANY($1)', [demoIds]);
-      await client.query('DELETE FROM wishlists WHERE user_id = ANY($1)', [demoIds]);
-      await client.query('DELETE FROM addresses WHERE user_id = ANY($1)', [demoIds]);
-      await client.query('DELETE FROM notifications WHERE user_id = ANY($1)', [demoIds]);
-      await client.query('DELETE FROM analytics_events WHERE user_id = ANY($1)', [demoIds]);
-      await client.query('DELETE FROM users WHERE id = ANY($1)', [demoIds]);
-      console.log('  Removed ' + demoIds.length + ' demo account(s)');
-    }
+    // Demo accounts are now preserved across restarts (seeded by seed.js)
 
     console.log('✅ Migration complete!');
   } finally {

@@ -1,12 +1,12 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   Search, ShoppingCart, Heart, User, Menu, X, ChevronDown,
   Package, Bell, LogOut, LogIn, LayoutDashboard,
-  Store, Sun, Moon, Mic
+  Store, Sun, Moon, Mic, Globe
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/lib/cart';
@@ -39,6 +39,8 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(false);
   const [currentUser, setCurrentUser] = useState<CurrentUser>(null);
+  const [translateOpen, setTranslateOpen] = useState(false);
+  const translateRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -199,6 +201,32 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-1">
+            {/* Language / Translate widget */}
+            <div className="relative hidden sm:block" ref={translateRef}>
+              <button
+                onClick={() => setTranslateOpen(!translateOpen)}
+                className="btn-icon"
+                title="Translate page"
+                aria-label="Change language"
+              >
+                <Globe className="w-4 h-4" />
+              </button>
+              <AnimatePresence>
+                {translateOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-card border border-gray-100 p-3 z-50"
+                  >
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Language</p>
+                    <div id="google_translate_element" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             <button onClick={toggleDark} className="btn-icon hidden sm:flex">
               {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
@@ -332,6 +360,16 @@ export default function Header() {
                   </Link>
                 ))}
               </div>
+              {/* Language / translate — mobile */}
+              <div className="border-t border-gray-100 pt-2 mt-2">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2 flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5" /> Language
+                </p>
+                <div className="px-3 py-1">
+                  <div id="google_translate_element_mobile" />
+                </div>
+              </div>
+
               {currentUser ? (
                 <div className="border-t border-gray-100 pt-2 mt-2">
                   <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-600 rounded-xl hover:bg-gray-50">

@@ -1,0 +1,2 @@
+- [Next.js + Replit allowedDevOrigins](nextjs-replit-dev-origins.md) — must include exact REPLIT_DEV_DOMAIN/REPLIT_DOMAINS env vars; wildcards don't work.
+- [Auth: email+password alongside Firebase](auth-dual-path.md) — login/register support both paths; Firebase Admin requires FIREBASE_PRIVATE_KEY which may be absent.

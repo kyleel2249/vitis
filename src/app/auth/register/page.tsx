@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import { Zap, Mail, Lock, User, Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
 
 const BENEFITS = ['Free shipping on first order', 'Exclusive member deals', 'Order tracking & history', 'Personalised product discovery'];
 
@@ -22,19 +20,14 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) { toast.error('Passwords do not match'); return; }
-    if (form.password.length < 8) { toast.error('Password must be at least 8 characters'); return; }
+    if (form.password.length < 6) { toast.error('Password must be at least 6 characters'); return; }
     if (!agree) { toast.error('Please accept the terms'); return; }
     setLoading(true);
     try {
-      // Create account in Firebase
-      const credential = await createUserWithEmailAndPassword(auth, form.email, form.password);
-      const idToken = await credential.user.getIdToken();
-
-      // Create user record in our database
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken, name: form.name }),
+        body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
       });
       const data = await res.json();
       if (data.success) {
@@ -42,19 +35,10 @@ export default function RegisterPage() {
         router.push('/');
         router.refresh();
       } else {
-        // Registration in DB failed — delete the Firebase account to stay in sync
-        await credential.user.delete();
         toast.error(data.error || 'Registration failed');
       }
-    } catch (err: any) {
-      const code = err?.code || '';
-      if (code === 'auth/email-already-in-use') {
-        toast.error('An account with this email already exists');
-      } else if (code === 'auth/weak-password') {
-        toast.error('Password is too weak');
-      } else {
-        toast.error('Registration failed. Please try again.');
-      }
+    } catch {
+      toast.error('Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -106,7 +90,7 @@ export default function RegisterPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type={showPw ? 'text' : 'password'} value={form.password} onChange={update('password')} placeholder="Min. 8 characters" className="input pl-10 pr-10" required />
+                <input type={showPw ? 'text' : 'password'} value={form.password} onChange={update('password')} placeholder="Min. 6 characters" className="input pl-10 pr-10" required />
                 <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400">
                   {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
