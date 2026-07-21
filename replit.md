@@ -54,4 +54,25 @@ node scripts/seed.js      # Seed demo data
 | `/admin` | Admin dashboard |
 | `/vendor/dashboard` | Vendor portal |
 
+## AI assistant (Vitis AI)
+
+The floating chat button (bottom-right on all shop pages) is powered by a real backend:
+
+- **API route**: `src/app/api/ai/chat/route.ts`
+- Queries the live PostgreSQL catalog for product search, deals, and categories
+- The component is `src/components/home/AIAssistant.tsx`
+
+To upgrade to a real LLM (e.g. OpenAI), replace the `buildReply()` function in the API route with an OpenAI/xAI call and keep the same response shape `{ success: true, reply: string }`.
+
+## Visitor cookies
+
+`src/middleware.ts` sets two cookies for every visitor on arrival:
+
+| Cookie | Type | Purpose |
+|--------|------|---------|
+| `visitor_id` | Persistent (1 year) | Anonymous visitor identifier for analytics |
+| `session_start` | Session (cleared on browser close) | Timestamp of current session start |
+
+Auth cookies (`auth_token`) are set separately on login/register.
+
 ## User preferences
