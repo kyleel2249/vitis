@@ -299,8 +299,8 @@ async function buildReply(message: string): Promise<string> {
   if (intent === 'greeting') {
     return (
       header +
-      "Hi there! 👋 I'm **Vitis Assistant** — your AI-powered shopping companion backed by a full team of intelligent specialists.\n\n" +
-      "Here's what our AI team can help you with:\n\n" +
+      "Hi there! 👋 I'm **Vitis Assistant** — your smart shopping companion backed by a full team of specialists.\n\n" +
+      "Here's what our team can help you with:\n\n" +
       "🔍 **Find products** — search by name, type, or budget\n" +
       "🔥 **Deals & flash sales** — today's best discounts\n" +
       "📦 **Order tracking** — check your order status\n" +
@@ -402,7 +402,7 @@ async function buildReply(message: string): Promise<string> {
   if (intent === 'order_help') {
     return (
       header +
-      "📦 **Order Help — Customer Success AI**\n\n" +
+      "📦 **Order Help — Customer Success**\n\n" +
       "Here's everything you need to know:\n\n" +
       "🔍 **Track an order** → **My Account → Orders** to see real-time status\n" +
       "❌ **Cancel an order** → possible before the order ships from **My Account**\n" +
@@ -420,7 +420,7 @@ async function buildReply(message: string): Promise<string> {
   if (intent === 'returns_refund') {
     return (
       header +
-      "🔄 **Returns & Refunds — Customer Success AI**\n\n" +
+      "🔄 **Returns & Refunds — Customer Success**\n\n" +
       "We want you to be 100% happy with your purchase!\n\n" +
       "**Return Policy:**\n" +
       "• ✅ Items accepted within **30 days** of delivery\n" +
@@ -441,7 +441,7 @@ async function buildReply(message: string): Promise<string> {
   if (intent === 'shipping') {
     return (
       header +
-      "🚚 **Shipping Information — Customer Success AI**\n\n" +
+      "🚚 **Shipping Information — Customer Success**\n\n" +
       "**Domestic Shipping Options:**\n" +
       "• 🐢 Standard (3–5 days) — Free on orders over $50\n" +
       "• ⚡ Express (1–2 days) — $9.99\n" +
@@ -503,7 +503,7 @@ async function buildReply(message: string): Promise<string> {
     const deals = await getDeals(4);
     let reply =
       header +
-      "💎 **VIP & Exclusive Access — Loyalty & Rewards AI**\n\n" +
+      "💎 **VIP & Exclusive Access — Loyalty & Rewards**\n\n" +
       "As a Vitis VIP (Platinum member) you unlock:\n\n" +
       "• 🎯 **Early access** to new product launches (24 hrs before public)\n" +
       "• 💌 **Private sale invitations** — exclusive discounts not listed publicly\n" +
@@ -546,7 +546,7 @@ async function buildReply(message: string): Promise<string> {
   if (intent === 'reviews') {
     return (
       header +
-      "⭐ **Reviews & Ratings — Customer Success AI**\n\n" +
+      "⭐ **Reviews & Ratings — Customer Success**\n\n" +
       "Your opinion matters — and it earns you rewards!\n\n" +
       "**How to leave a review:**\n" +
       "1. Go to **My Account → Orders**\n" +
@@ -566,7 +566,7 @@ async function buildReply(message: string): Promise<string> {
     const lowStock = await getLowStockProducts(3);
     let reply =
       header +
-      "🔔 **Back-in-Stock Alerts — Sales AI**\n\n" +
+      "🔔 **Back-in-Stock Alerts — Sales**\n\n" +
       "Never miss a restock! Here's how to get notified:\n\n" +
       "1. 🔍 Visit the product page of any out-of-stock item\n" +
       "2. Click **\"Notify Me When Available\"**\n" +
@@ -585,7 +585,7 @@ async function buildReply(message: string): Promise<string> {
     const deals = await getDeals(5);
     let reply =
       header +
-      "📉 **Price Drop Alerts — Sales AI**\n\n" +
+      "📉 **Price Drop Alerts — Sales**\n\n" +
       "Stay on top of price changes automatically:\n\n" +
       "• ❤️ **Add to Wishlist** — we'll notify you if the price drops\n" +
       "• 📬 **Subscribe to newsletters** — weekly deals delivered to your inbox\n" +
@@ -610,7 +610,7 @@ async function buildReply(message: string): Promise<string> {
     ]);
     let reply =
       header +
-      "⭐ **Personalized Picks — Sales & Recommendations AI**\n\n" +
+      "⭐ **Personalized Picks — Sales & Recommendations**\n\n" +
       "Based on what's trending and top-rated across Vitis:\n\n";
     if (trending.length) {
       reply += "🔥 **Trending Now:**\n";
@@ -622,7 +622,7 @@ async function buildReply(message: string): Promise<string> {
       reply += bestSellers.map((p: any) => `• **${p.name}** — $${parseFloat(p.price).toFixed(2)} · ${p.sold_count} sold`).join('\n');
       reply += '\n\n';
     }
-    reply += "💡 For truly personalized picks, **sign in** and our AI learns your style from your browsing and purchase history.\n\n";
+    reply += "💡 For truly personalized picks, **sign in** and we'll tailor suggestions to your browsing and purchase history.\n\n";
     reply += "Tell me a category or budget and I'll narrow it down!";
     return reply;
   }
@@ -632,7 +632,7 @@ async function buildReply(message: string): Promise<string> {
     const deals = await getDeals(3);
     let reply =
       header +
-      "🎂 **Birthday & Anniversary Rewards — Loyalty AI**\n\n" +
+      "🎂 **Birthday & Anniversary Rewards — Loyalty**\n\n" +
       "We love celebrating with our customers!\n\n" +
       "**Birthday Perks (during your birthday month):**\n" +
       "• 🎁 **500 bonus loyalty points** — added automatically\n" +
@@ -656,13 +656,13 @@ async function buildReply(message: string): Promise<string> {
   if (intent === 'vendor') {
     return (
       header +
-      "🏪 **Sell on Vitis — Vendor Relations AI**\n\n" +
+      "🏪 **Sell on Vitis — Vendor Relations**\n\n" +
       "Join thousands of sellers already growing their business on Vitis Marketplace!\n\n" +
       "**Why sell on Vitis?**\n" +
       "• 🌍 Reach millions of active shoppers\n" +
       "• 📊 Powerful vendor dashboard — analytics, earnings, inventory\n" +
       "• 💸 Competitive commission rates starting at 10%\n" +
-      "• 🤖 AI-powered product recommendations drive traffic to your store\n" +
+      "• 🤖 Smart product recommendations drive traffic to your store\n" +
       "• 📦 Integrated order & inventory management\n" +
       "• 💳 Weekly payouts to your bank account\n\n" +
       "**How to get started:**\n" +
@@ -679,7 +679,7 @@ async function buildReply(message: string): Promise<string> {
   if (intent === 'account') {
     return (
       header +
-      "👤 **Account Help — Support AI**\n\n" +
+      "👤 **Account Help — Support**\n\n" +
       "Here's what you can manage in **My Account**:\n\n" +
       "• 📋 **Profile** — update name, email, phone, birthday\n" +
       "• 🔑 **Password** — change your password anytime\n" +
@@ -701,14 +701,14 @@ async function buildReply(message: string): Promise<string> {
   if (intent === 'sustainability') {
     return (
       header +
-      "🌿 **About Vitis — Shopping Guide AI**\n\n" +
-      "Vitis is an AI-powered multi-vendor commerce platform built to connect shoppers with trusted sellers worldwide.\n\n" +
+      "🌿 **About Vitis — Shopping Guide**\n\n" +
+      "Vitis is a multi-vendor commerce platform built to connect shoppers with trusted sellers worldwide.\n\n" +
       "**Our values:**\n" +
       "• 🤝 **Trust** — verified vendors, authentic products, buyer protection\n" +
       "• ♻️ **Sustainability** — we partner with eco-conscious brands and offset shipping emissions\n" +
-      "• 🤖 **Innovation** — AI-driven personalization, smart search, and autonomous support\n" +
+      "• 🤖 **Innovation** — smart personalization, intelligent search, and autonomous support\n" +
       "• 🌍 **Inclusion** — accessible design, multi-language support, global shipping\n\n" +
-      "**Our AI Team:** Behind every interaction is a team of specialized AI agents — from our Shopping Guide and Sales AI to Customer Success and Loyalty specialists — all working together to give you a seamless experience.\n\n" +
+      "**Our Team:** Behind every interaction is a team of specialists — from Shopping Guides and Sales experts to Customer Success and Loyalty specialists — all working together to give you a seamless experience.\n\n" +
       "Anything specific you'd like to know about Vitis?"
     );
   }
@@ -717,7 +717,7 @@ async function buildReply(message: string): Promise<string> {
   if (intent === 'support') {
     return (
       header +
-      "🛟 **Support Escalation — Support AI**\n\n" +
+      "🛟 **Support Escalation — Support Team**\n\n" +
       "I'm sorry you're running into an issue — let's get it sorted!\n\n" +
       "**Self-service options (fastest):**\n" +
       "• 📚 **Help Center** → **/help** — articles covering most common questions\n" +
