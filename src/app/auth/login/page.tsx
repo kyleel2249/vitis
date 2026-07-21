@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Zap, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 function LoginForm() {
   const router = useRouter();
@@ -19,10 +21,15 @@ function LoginForm() {
     e.preventDefault();
     setLoading(true);
     try {
+      // Sign in with Firebase — Firebase handles auth state on the client
+      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const idToken = await credential.user.getIdToken();
+
+      // Exchange Firebase token for an httpOnly session cookie on the server
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ idToken }),
       });
       const data = await res.json();
       if (data.success) {
@@ -32,8 +39,17 @@ function LoginForm() {
       } else {
         toast.error(data.error || 'Sign in failed');
       }
-    } catch {
-      toast.error('Sign in failed. Please try again.');
+    } catch (err: any) {
+      const code = err?.code || '';
+      if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
+        toast.error('Invalid email or password');
+      } else if (code === 'auth/too-many-requests') {
+        toast.error('Too many attempts. Please try again later.');
+      } else if (code === 'auth/network-request-failed') {
+        toast.error('Network error. Please check your connection.');
+      } else {
+        toast.error('Sign in failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -44,7 +60,6 @@ function LoginForm() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md">
 
-        {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">
             <div className="w-10 h-10 bg-primary-600 rounded-xl flex items-center justify-center shadow-glow">
@@ -62,18 +77,30 @@ function LoginForm() {
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Email address</label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com" className="input pl-10" required />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="input pl-10"
+                  autoComplete="email"
+                  required
+                />
               </div>
             </div>
             <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-sm font-medium text-gray-700">Password</label>
-              </div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••" className="input pl-10 pr-10" required />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="input pl-10 pr-10"
+                  autoComplete="current-password"
+                  required
+                />
                 <button type="button" onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -81,18 +108,11 @@ function LoginForm() {
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="btn-primary w-full py-3.5 justify-center text-base disabled:opacity-50">
+            <button type="submit" disabled={loading}
+              className="btn-primary w-full py-3.5 justify-center text-base disabled:opacity-50">
               {loading ? 'Signing in…' : 'Sign In'} {!loading && <ArrowRight className="w-5 h-5" />}
             </button>
           </form>
-
-          {/* Demo accounts hint */}
-          <div className="mt-6 p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-500 space-y-1">
-            <p className="font-semibold text-gray-600">Demo accounts (password: demo123)</p>
-            <p>Customer: customer@demo.com</p>
-            <p>Vendor: vendor@demo.com</p>
-            <p>Admin: admin@demo.com</p>
-          </div>
         </div>
 
         <p className="text-center text-sm text-gray-500 mt-6">

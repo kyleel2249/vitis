@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Zap, Mail, Lock, User, Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 const BENEFITS = ['Free shipping on first order', 'Exclusive member deals', 'Order tracking & history', 'Personalised product discovery'];
 
@@ -20,14 +22,19 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) { toast.error('Passwords do not match'); return; }
-    if (form.password.length < 6) { toast.error('Password must be at least 6 characters'); return; }
+    if (form.password.length < 8) { toast.error('Password must be at least 8 characters'); return; }
     if (!agree) { toast.error('Please accept the terms'); return; }
     setLoading(true);
     try {
+      // Create account in Firebase — Firebase owns the identity
+      const credential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+      const idToken = await credential.user.getIdToken();
+
+      // Create the user record in our database and issue a session cookie
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
+        body: JSON.stringify({ idToken, name: form.name }),
       });
       const data = await res.json();
       if (data.success) {
@@ -35,10 +42,21 @@ export default function RegisterPage() {
         router.push('/');
         router.refresh();
       } else {
+        // DB registration failed — delete the Firebase account to stay in sync
+        await credential.user.delete();
         toast.error(data.error || 'Registration failed');
       }
-    } catch {
-      toast.error('Registration failed. Please try again.');
+    } catch (err: any) {
+      const code = err?.code || '';
+      if (code === 'auth/email-already-in-use') {
+        toast.error('An account with this email already exists');
+      } else if (code === 'auth/weak-password') {
+        toast.error('Password is too weak — use at least 8 characters');
+      } else if (code === 'auth/network-request-failed') {
+        toast.error('Network error. Please check your connection.');
+      } else {
+        toast.error('Registration failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -59,7 +77,6 @@ export default function RegisterPage() {
         </div>
 
         <div className="card p-8">
-          {/* Benefits */}
           <div className="bg-primary-50 rounded-xl p-4 mb-6">
             <p className="text-sm font-semibold text-primary-700 mb-2">Member benefits:</p>
             <ul className="space-y-1">
@@ -76,22 +93,26 @@ export default function RegisterPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
               <div className="relative">
                 <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type="text" value={form.name} onChange={update('name')} placeholder="John Doe" className="input pl-10" required />
+                <input type="text" value={form.name} onChange={update('name')} placeholder="John Doe"
+                  className="input pl-10" autoComplete="name" required />
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type="email" value={form.email} onChange={update('email')} placeholder="you@example.com" className="input pl-10" required />
+                <input type="email" value={form.email} onChange={update('email')} placeholder="you@example.com"
+                  className="input pl-10" autoComplete="email" required />
               </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type={showPw ? 'text' : 'password'} value={form.password} onChange={update('password')} placeholder="Min. 6 characters" className="input pl-10 pr-10" required />
-                <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400">
+                <input type={showPw ? 'text' : 'password'} value={form.password} onChange={update('password')}
+                  placeholder="Min. 8 characters" className="input pl-10 pr-10" autoComplete="new-password" required />
+                <button type="button" onClick={() => setShowPw(!showPw)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400">
                   {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
@@ -100,19 +121,22 @@ export default function RegisterPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input type="password" value={form.confirmPassword} onChange={update('confirmPassword')} placeholder="Re-enter password" className="input pl-10" required />
+                <input type="password" value={form.confirmPassword} onChange={update('confirmPassword')}
+                  placeholder="Re-enter password" className="input pl-10" autoComplete="new-password" required />
               </div>
             </div>
 
             <label className="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="w-4 h-4 mt-0.5 rounded text-primary-600" />
+              <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)}
+                className="w-4 h-4 mt-0.5 rounded text-primary-600" />
               <span className="text-xs text-gray-600">
                 I agree to the <Link href="/terms" className="text-primary-600 hover:underline">Terms of Service</Link>{' '}
                 and <Link href="/privacy" className="text-primary-600 hover:underline">Privacy Policy</Link>
               </span>
             </label>
 
-            <button type="submit" disabled={loading} className="btn-primary w-full py-3.5 justify-center text-base disabled:opacity-50">
+            <button type="submit" disabled={loading}
+              className="btn-primary w-full py-3.5 justify-center text-base disabled:opacity-50">
               {loading ? 'Creating account…' : 'Create Account'} {!loading && <ArrowRight className="w-5 h-5" />}
             </button>
           </form>
