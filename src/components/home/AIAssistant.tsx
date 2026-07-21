@@ -5,7 +5,7 @@ import { MessageCircle, X, Send, Sparkles, Bot, User, Loader2, ChevronDown } fro
 
 type Message = { role: 'user' | 'assistant'; content: string; timestamp: Date };
 
-// Suggestion chips covering the full AI Company capability set
+// Suggestion chips covering the full assistant capability set
 const SUGGESTION_GROUPS = [
   { label: '🔍 Find products', query: 'Find me wireless headphones under $100' },
   { label: '🔥 Deals today', query: 'What are the best deals today?' },
@@ -30,7 +30,7 @@ const SUGGESTION_GROUPS = [
 const WELCOME: Message = {
   role: 'assistant',
   content:
-    "Hi! 👋 I'm **Vitis Assistant** — your AI-powered shopping companion.\n\nI'm backed by a full team of AI specialists covering shopping, deals, loyalty, customer success, and more.\n\nWhat can I help you with today?",
+    "Hi! 👋 I'm **Vitis Assistant** — your smart shopping companion.\n\nI'm backed by a full team of specialists covering shopping, deals, loyalty, customer success, and more.\n\nWhat can I help you with today?",
   timestamp: new Date(),
 };
 
@@ -126,7 +126,7 @@ export default function AIAssistant() {
         whileTap={{ scale: 0.95 }}
         onClick={() => setOpen(true)}
         className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary-600 text-white shadow-glow flex items-center justify-center transition-all ${open ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'}`}
-        aria-label="Open Vitis AI Assistant"
+        aria-label="Open Vitis Assistant"
       >
         <Sparkles className="w-6 h-6" />
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse" />
@@ -149,10 +149,10 @@ export default function AIAssistant() {
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-white font-semibold text-sm">Vitis AI Assistant</p>
+                <p className="text-white font-semibold text-sm">Vitis Assistant</p>
                 <p className="text-white/70 text-xs flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 bg-green-400 rounded-full inline-block animate-pulse" />
-                  Multi-specialist AI · Live catalog
+                  Multi-specialist · Live catalog
                 </p>
               </div>
               <button

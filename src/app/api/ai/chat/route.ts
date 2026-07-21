@@ -286,7 +286,7 @@ function deptHeader(dept: Department): string {
     'Vendor Relations': '🏪',
     'Support': '🛟',
   };
-  return `*${icons[dept]} Vitis ${dept} AI*\n\n`;
+  return `*${icons[dept]} Vitis ${dept}*\n\n`;
 }
 
 // ── Build response ───────────────────────────────────────────────────────────
