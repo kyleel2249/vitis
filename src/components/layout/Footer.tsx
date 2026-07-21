@@ -18,10 +18,10 @@ const FOOTER_LINKS = {
   sell: {
     title: 'Sell',
     links: [
-      { label: 'Start Selling', href: '/vendor/register' },
+      { label: 'Start Selling', href: '/start-selling' },
       { label: 'Vendor Dashboard', href: '/vendor/dashboard' },
-      { label: 'Vendor Resources', href: '/vendor/resources' },
-      { label: 'Commission Rates', href: '/vendor/commissions' },
+      { label: 'Vendor Resources', href: '/vendor-resources' },
+      { label: 'Commission Rates', href: '/commission-rates' },
       { label: 'Affiliate Program', href: '/affiliates' },
     ],
   },
@@ -68,7 +68,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-2xl font-bold text-white">Stay in the loop</h3>
-              <p className="text-gray-400 mt-1">Get exclusive deals, new arrivals, and AI-powered recommendations.</p>
+              <p className="text-gray-400 mt-1">Get exclusive deals, new arrivals, and personalised recommendations.</p>
             </div>
             <form className="flex gap-3 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>
               <input
@@ -94,7 +94,7 @@ export default function Footer() {
               <Image src="/vitis-logo.png" alt="Vitis" width={120} height={37} className="h-9 w-auto object-contain brightness-0 invert" />
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed mb-6">
-              The world's most advanced AI-powered commerce operating system. Connecting millions of buyers and sellers globally.
+              The world's most advanced commerce operating system. Connecting millions of buyers and sellers globally.
             </p>
             <div className="space-y-2 text-sm text-gray-400">
               <div className="flex items-center gap-2">

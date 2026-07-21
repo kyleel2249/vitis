@@ -15,7 +15,7 @@ const SUGGESTIONS = [
 const WELCOME: Message = {
   role: 'assistant',
   content:
-    "Hi! I'm **Vitis AI**, your personal shopping assistant. I can find products, surface today's deals, browse categories, and help with orders.\n\nWhat are you looking for today?",
+    "Hi! I'm **Vitis Assistant**, your personal shopping guide. I can find products, surface today's deals, browse categories, and help with orders.\n\nWhat are you looking for today?",
   timestamp: new Date(),
 };
 
@@ -95,7 +95,7 @@ export default function AIAssistant() {
         whileTap={{ scale: 0.95 }}
         onClick={() => setOpen(true)}
         className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary-600 text-white shadow-glow flex items-center justify-center transition-all ${open ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}`}
-        aria-label="Open AI Assistant"
+        aria-label="Open Shopping Assistant"
       >
         <Sparkles className="w-6 h-6" />
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white" />
@@ -118,7 +118,7 @@ export default function AIAssistant() {
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1">
-                <p className="text-white font-semibold text-sm">Vitis AI</p>
+                <p className="text-white font-semibold text-sm">Vitis Assistant</p>
                 <p className="text-white/70 text-xs flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-green-400 rounded-full inline-block" />
                   Shopping assistant · Live catalog

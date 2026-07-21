@@ -101,7 +101,7 @@ async function buildReply(message: string): Promise<string> {
 
   if (intent === 'greeting') {
     return (
-      "Hi there! 👋 I'm **Vitis AI**, your personal shopping assistant.\n\n" +
+      "Hi there! 👋 I'm **Vitis Assistant**, your personal shopping guide.\n\n" +
       "I can help you:\n" +
       "• 🔍 Find products by name, type, or budget\n" +
       "• 💰 Spot today's best deals & discounts\n" +

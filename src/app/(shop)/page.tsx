@@ -9,8 +9,8 @@ import TestimonialsSection from '@/components/home/TestimonialsSection';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Vitis — AI-Powered Commerce Platform',
-  description: 'Shop millions of products with AI-powered recommendations, instant search, and personalized deals.',
+  title: 'Vitis — The Future of Commerce',
+  description: 'Shop millions of products with smart recommendations, instant search, and personalized deals.',
 };
 
 export default function HomePage() {

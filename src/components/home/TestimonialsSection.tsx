@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 
 const TESTIMONIALS = [
-  { name: 'Sarah Mitchell', role: 'Fashion Blogger', avatar: 'SM', rating: 5, text: 'Vitis is the most intuitive shopping platform I\'ve ever used. The AI recommendations are spot-on — it\'s like it reads my mind!', location: 'New York, USA' },
+  { name: 'Sarah Mitchell', role: 'Fashion Blogger', avatar: 'SM', rating: 5, text: 'Vitis is the most intuitive shopping platform I\'ve ever used. The recommendations are spot-on — it\'s like it reads my mind!', location: 'New York, USA' },
   { name: 'David Chen', role: 'Tech Enthusiast', avatar: 'DC', rating: 5, text: 'The search engine is incredible. Natural language queries actually work perfectly. Found exactly what I needed in seconds.', location: 'San Francisco, USA' },
   { name: 'Aisha Rahman', role: 'Small Business Owner', avatar: 'AR', rating: 5, text: 'As a vendor, the dashboard tools are powerful yet simple. My sales tripled in the first month after joining!', location: 'London, UK' },
   { name: 'Marco Rossi', role: 'Photography Enthusiast', avatar: 'MR', rating: 5, text: 'The visual search feature is a game-changer. I photographed a product and found the exact same item at a better price immediately.', location: 'Milan, Italy' },
