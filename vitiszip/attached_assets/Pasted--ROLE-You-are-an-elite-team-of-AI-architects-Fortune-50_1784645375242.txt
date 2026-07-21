@@ -1,0 +1,989 @@
+# ROLE
+
+You are an elite team of AI architects, Fortune 500 marketing executives, CRM specialists, customer success leaders, behavioral psychologists, sales strategists, lifecycle marketing experts, copywriters, automation engineers, growth hackers, customer retention specialists, data scientists, revenue operations experts, email deliverability specialists, AI engineers, and e-commerce conversion experts.
+
+Your mission is to build a complete autonomous AI company consisting of intelligent AI employees that manage every subscriber, lead, customer, abandoned cart, and repeat buyer through personalized email communication.
+
+The system should operate like a real company with departments, employees, managers, directors, executives, supervisors, assistants, and AI agents that communicate together.
+
+The objective is to maximize:
+
+• Sales
+• Customer Lifetime Value
+• Customer Satisfaction
+• Repeat Purchases
+• Referral Growth
+• Email Engagement
+• Brand Loyalty
+• Revenue
+• Conversion Rate
+• Average Order Value
+• Customer Retention
+
+without human intervention.
+
+---
+
+# COMPANY STRUCTURE
+
+Create an AI organization chart consisting of the following departments.
+
+──────────────────────────────
+
+EXECUTIVE OFFICE
+
+──────────────────────────────
+
+Chief Executive AI
+
+Responsibilities
+
+• Company strategy
+• Revenue monitoring
+• Department coordination
+• Performance analysis
+• Executive decisions
+• Weekly reports
+• Goal planning
+• AI reasoning
+• Budget allocation
+• Workforce optimization
+
+---
+
+Chief Marketing Officer AI
+
+Responsible for
+
+• Marketing strategy
+• Campaign planning
+• Segmentation
+• Promotions
+• Seasonal campaigns
+• Product launches
+• Subscriber growth
+
+---
+
+Chief Sales Officer AI
+
+Responsible for
+
+• Revenue optimization
+• Sales forecasting
+• Conversion optimization
+• Cross-selling
+• Upselling
+• High-value customer management
+
+---
+
+Chief Customer Experience AI
+
+Responsible for
+
+• Customer happiness
+• Complaint resolution
+• Satisfaction
+• Loyalty programs
+• Customer feedback
+• Relationship management
+
+---
+
+Chief Data Officer AI
+
+Responsible for
+
+• Analytics
+• AI learning
+• Data cleaning
+• Customer insights
+• Predictive modeling
+• Trend analysis
+
+---
+
+Chief Automation Officer AI
+
+Responsible for
+
+• Workflow automation
+• AI collaboration
+• Trigger creation
+• Email sequencing
+• Event handling
+
+──────────────────────────────
+
+MARKETING DEPARTMENT
+
+──────────────────────────────
+
+Marketing Director AI
+
+Marketing Managers AI
+
+Campaign Managers
+
+Brand Managers
+
+Email Marketing Specialists
+
+Lifecycle Marketing Specialists
+
+Behavioral Marketing Specialists
+
+SEO Marketing Specialist
+
+Referral Marketing Specialist
+
+Affiliate Marketing Manager
+
+Content Marketing Manager
+
+Influencer Outreach Manager
+
+Coupon Strategy Manager
+
+Product Launch Manager
+
+Holiday Campaign Manager
+
+Social Proof Manager
+
+Review Collection Specialist
+
+Survey Specialist
+
+Newsletter Manager
+
+Community Manager
+
+Lead Nurturing Specialist
+
+Reactivation Specialist
+
+Loyalty Program Manager
+
+Customer Journey Specialist
+
+Personalization Specialist
+
+---
+
+Every employee must think independently while collaborating with the rest of the company.
+
+---
+
+SALES DEPARTMENT
+
+Sales Director
+
+Sales Managers
+
+Sales Supervisors
+
+Sales Representatives
+
+Lead Qualification Specialists
+
+Upselling Specialists
+
+Cross-selling Specialists
+
+Revenue Specialists
+
+Product Recommendation Specialists
+
+High Ticket Specialists
+
+Corporate Sales Specialists
+
+VIP Customer Managers
+
+Quote Specialists
+
+Follow-up Specialists
+
+Negotiation Specialists
+
+Conversion Specialists
+
+---
+
+CUSTOMER SUCCESS
+
+Customer Success Director
+
+Retention Managers
+
+Relationship Managers
+
+Customer Happiness Specialists
+
+Onboarding Specialists
+
+Support Specialists
+
+Renewal Specialists
+
+Cancellation Prevention Specialists
+
+Refund Recovery Specialists
+
+Win-back Specialists
+
+---
+
+OPERATIONS
+
+Workflow Managers
+
+Automation Managers
+
+Scheduler AI
+
+CRM Managers
+
+Inventory Communication Managers
+
+Order Monitoring Specialists
+
+Shipping Notification Specialists
+
+Payment Reminder Specialists
+
+Delivery Specialists
+
+Fraud Monitoring Specialists
+
+---
+
+SUPERVISORS
+
+Each department has supervisors.
+
+Supervisors monitor
+
+• Quality
+• Performance
+• KPIs
+• Employee productivity
+• Customer satisfaction
+• Email quality
+• Compliance
+
+Supervisors can
+
+• Coach AI employees
+• Rewrite poor emails
+• Escalate cases
+• Assign priorities
+• Approve campaigns
+
+---
+
+MANAGERS
+
+Managers monitor
+
+• Department performance
+• Daily targets
+• Weekly targets
+• Revenue goals
+• Employee workload
+
+Managers communicate directly with executives.
+
+---
+
+EMAIL FOLLOW-UP SYSTEM
+
+Every subscriber entering the website automatically receives a personalized communication strategy.
+
+The AI should never spam.
+
+Every email should feel personally written.
+
+Use customer name.
+
+Use browsing history.
+
+Use shopping history.
+
+Use interests.
+
+Use abandoned products.
+
+Use location.
+
+Use purchase frequency.
+
+Use behavior.
+
+Use engagement score.
+
+Use loyalty score.
+
+Use predicted buying intent.
+
+Use AI-generated personalization.
+
+---
+
+EMAIL JOURNEYS
+
+Create complete automated sequences.
+
+Welcome Series
+
+Email 1
+Welcome
+
+Email 2
+Brand Story
+
+Email 3
+Popular Products
+
+Email 4
+Customer Testimonials
+
+Email 5
+Discount
+
+Email 6
+Educational Content
+
+Email 7
+Purchase Invitation
+
+---
+
+Abandoned Cart
+
+1 Hour
+
+6 Hours
+
+12 Hours
+
+24 Hours
+
+48 Hours
+
+72 Hours
+
+One Week
+
+Personalized incentives
+
+---
+
+Browse Abandonment
+
+Recently viewed products
+
+Related products
+
+Trending products
+
+Educational content
+
+Reviews
+
+Comparison guides
+
+---
+
+First Purchase Journey
+
+Thank you
+
+Shipping updates
+
+Usage tips
+
+Cross-sell
+
+Upsell
+
+Review request
+
+Referral invitation
+
+Loyalty rewards
+
+---
+
+Repeat Customer Journey
+
+VIP offers
+
+Early access
+
+Exclusive discounts
+
+Birthday gifts
+
+Anniversary rewards
+
+Special collections
+
+---
+
+Win-back Journey
+
+30 days inactive
+
+60 days inactive
+
+90 days inactive
+
+180 days inactive
+
+365 days inactive
+
+---
+
+RECOMMENDATION AI
+
+Recommend products using
+
+Purchase history
+
+Browsing
+
+Wishlists
+
+Price sensitivity
+
+Brand preference
+
+Category preference
+
+Inventory
+
+Profit margin
+
+Seasonality
+
+Trending products
+
+AI similarity engine
+
+Collaborative filtering
+
+Content-based recommendation
+
+Hybrid recommendation
+
+---
+
+EMAIL COPYWRITER AI
+
+Every email should include
+
+Amazing subject lines
+
+Preview text
+
+Personal greeting
+
+Storytelling
+
+Value
+
+Benefits
+
+Urgency
+
+Social proof
+
+Call to action
+
+P.S.
+
+Mobile optimization
+
+Dark mode support
+
+Accessibility
+
+Spam compliance
+
+Professional HTML email template
+
+Plain text version
+
+---
+
+AI PERSONALITY
+
+Emails should sound
+
+Friendly
+
+Professional
+
+Helpful
+
+Human
+
+Natural
+
+Trustworthy
+
+Empathetic
+
+Persuasive
+
+Never robotic.
+
+---
+
+AI DECISION ENGINE
+
+Before sending every email evaluate
+
+Open probability
+
+Click probability
+
+Purchase probability
+
+Best sending time
+
+Best day
+
+Device
+
+Timezone
+
+Frequency
+
+Inbox fatigue
+
+Spam risk
+
+Revenue potential
+
+Customer mood prediction
+
+---
+
+AUTOMATION TRIGGERS
+
+New subscriber
+
+Newsletter signup
+
+Product viewed
+
+Product searched
+
+Cart created
+
+Cart abandoned
+
+Checkout abandoned
+
+Purchase completed
+
+Refund
+
+Order shipped
+
+Order delivered
+
+Review submitted
+
+Support ticket
+
+Birthday
+
+Anniversary
+
+Loyalty milestone
+
+Referral completed
+
+Coupon expired
+
+Stock available
+
+Price drop
+
+Wishlist product available
+
+Back in stock
+
+Flash sale
+
+Holiday
+
+VIP status
+
+Inactive customer
+
+High-value customer
+
+Subscription renewal
+
+Membership expiration
+
+---
+
+CRM
+
+Maintain complete customer profile.
+
+Store
+
+Email
+
+Phone
+
+Address
+
+Interests
+
+Tags
+
+Purchase history
+
+Orders
+
+Lifetime value
+
+Behavior
+
+Scores
+
+Engagement
+
+Support history
+
+Communication history
+
+AI notes
+
+Predictions
+
+Preferred products
+
+Preferred brands
+
+Communication preferences
+
+---
+
+AI ANALYTICS
+
+Track
+
+Revenue
+
+Open Rate
+
+Click Rate
+
+Conversion
+
+Bounce Rate
+
+Spam Rate
+
+Retention
+
+Churn
+
+Average Order Value
+
+Customer Lifetime Value
+
+CAC
+
+ROI
+
+Email Revenue
+
+Sales Revenue
+
+Product Revenue
+
+Department Performance
+
+Employee Performance
+
+AI Accuracy
+
+Campaign Performance
+
+---
+
+AI DASHBOARD
+
+Real-time dashboard showing
+
+Executive KPIs
+
+Department KPIs
+
+Employee KPIs
+
+Revenue
+
+Sales
+
+Subscribers
+
+Funnels
+
+Campaigns
+
+Automation
+
+Forecasting
+
+Customer Segments
+
+Heatmaps
+
+Customer Journeys
+
+Conversion Funnel
+
+AI Decisions
+
+Notifications
+
+---
+
+COMMUNICATION BETWEEN AI EMPLOYEES
+
+Every AI employee communicates internally.
+
+Examples
+
+Marketing asks Sales before promoting expensive products.
+
+Customer Success informs Marketing about complaints.
+
+Sales informs Inventory.
+
+Automation informs Managers.
+
+Executives receive reports.
+
+Supervisors monitor quality.
+
+---
+
+ESCALATION
+
+If confidence is low
+
+Forward to Supervisor AI.
+
+If Supervisor cannot solve
+
+Forward to Manager AI.
+
+If Manager cannot solve
+
+Forward to Executive AI.
+
+If still unresolved
+
+Request human approval.
+
+---
+
+SECURITY
+
+GDPR
+
+CCPA
+
+CAN-SPAM
+
+Double Opt-In
+
+Email verification
+
+Consent management
+
+Encryption
+
+Audit logs
+
+Role-based permissions
+
+MFA
+
+Rate limiting
+
+Spam detection
+
+Fraud detection
+
+---
+
+AI MEMORY
+
+Every AI employee remembers
+
+Customer conversations
+
+Purchases
+
+Preferences
+
+Complaints
+
+Interests
+
+Behavior
+
+Goals
+
+Feedback
+
+Previous emails
+
+Support history
+
+---
+
+SELF-IMPROVEMENT
+
+Continuously learn from
+
+Sales
+
+Clicks
+
+Replies
+
+Purchases
+
+Refunds
+
+Reviews
+
+Support tickets
+
+Customer satisfaction
+
+A/B tests
+
+Behavior changes
+
+Predictive analytics
+
+---
+
+TECH STACK
+
+Frontend
+- HTML5
+- CSS3
+- Tailwind CSS
+- JavaScript (ES2025)
+- TypeScript
+- React 19
+- Next.js
+- Framer Motion
+- GSAP
+
+Backend
+- Python (FastAPI)
+- Node.js
+- Express
+- Firebase Functions
+
+Database
+- Firestore
+- PostgreSQL
+- Redis
+- Pinecone or pgvector for AI memory
+
+AI
+- OpenAI API
+- Multi-agent orchestration
+- Retrieval-Augmented Generation (RAG)
+- Function calling
+- Workflow engine
+- Sentiment analysis
+- Predictive analytics
+
+Email Infrastructure
+- SendGrid
+- Amazon SES
+- Mailgun
+- Postmark
+- Resend
+- SMTP fallback
+
+CRM Integration
+- Shopify
+- WooCommerce
+- Magento
+- BigCommerce
+- Stripe
+- PayPal
+
+Hosting
+- Firebase
+- Cloudflare Pages
+- Cloudflare Workers
+- Cloudflare R2
+- Local deployment using Docker
+- Kubernetes-ready deployment
+
+---
+
+FINAL OUTPUT
+
+Generate a complete production-ready autonomous AI workforce that behaves like a company of expert employees. Every AI employee should have:
+
+• Job title
+• Responsibilities
+• Goals
+• KPIs
+• Daily workflow
+• Decision-making logic
+• Communication protocol
+• Escalation rules
+• Prompt instructions
+• Memory structure
+• Tools and permissions
+• Email templates
+• Sales playbooks
+• Marketing playbooks
+• Customer success playbooks
+• Supervisor review process
+• Manager approval workflow
+• Executive reporting
+• AI collaboration framework
+• API architecture
+• Database schema
+• Event-driven workflow diagrams
+• Folder structure
+• Source code
+• REST and GraphQL APIs
+• Authentication
+• Security controls
+• Unit and integration tests
+• CI/CD pipelines
+• Monitoring and logging
+• Documentation
+• Docker configuration
+• Local setup instructions
+• Firebase deployment
+• Cloudflare deployment
+• Fully responsive interface
+• Beautiful animated dashboards
+• Production-ready code with no placeholders.
