@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Package, ShoppingCart, Users, Store, BarChart3,
   Settings, Tag, Bell, Shield, Menu, X, LogOut, ChevronRight,
-  TrendingUp, CreditCard, Truck, MessageSquare, Star, Globe
+  TrendingUp, CreditCard, Truck, MessageSquare, Star, Globe, Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut } from 'firebase/auth';
@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 },
   { href: '/admin/payments', label: 'Payments', icon: CreditCard },
   { href: '/admin/shipping', label: 'Shipping', icon: Truck },
-  { href: '/admin/marketing', label: 'Marketing', icon: TrendingUp },
+  { href: '/admin/marketing', label: 'Marketing', icon: Mail },
   { href: '/admin/reviews', label: 'Reviews', icon: Star },
   { href: '/admin/support', label: 'Support', icon: MessageSquare, badge: '5' },
   { href: '/admin/coupons', label: 'Coupons', icon: Tag },

@@ -5,8 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Zap, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
 
 function LoginForm() {
   const router = useRouter();
@@ -21,15 +19,10 @@ function LoginForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      // Sign in with Firebase — Firebase handles auth state on the client
-      const credential = await signInWithEmailAndPassword(auth, email, password);
-      const idToken = await credential.user.getIdToken();
-
-      // Exchange Firebase token for an httpOnly session cookie on the server
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
+        body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
       if (data.success) {
@@ -41,7 +34,7 @@ function LoginForm() {
       }
     } catch (err: any) {
       const code = err?.code || '';
-      if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
+      if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found' || code === 'INVALID_LOGIN') {
         toast.error('Invalid email or password');
       } else if (code === 'auth/too-many-requests') {
         toast.error('Too many attempts. Please try again later.');

@@ -28,6 +28,8 @@ async function getResendApiKey(): Promise<string> {
   return key;
 }
 
+export { getResendApiKey };
+
 interface EmailPayload {
   to: string;
   subject: string;
@@ -62,6 +64,67 @@ export async function sendEmail(payload: EmailPayload): Promise<void> {
     // Log but never crash the calling request — email is best-effort
     console.warn('[email] Failed to send email:', err.message);
   }
+}
+
+export async function sendEmailStrict(payload: EmailPayload, apiKey?: string): Promise<void> {
+  const key = apiKey || await getResendApiKey();
+  const from = payload.from || 'Vitis <orders@vitis.app>';
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from,
+      to: [payload.to],
+      subject: payload.subject,
+      html: payload.html,
+    }),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    throw new Error(`Email provider error ${res.status}: ${error}`);
+  }
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+export function newsletterCampaignHtml({
+  content,
+  unsubscribeUrl,
+}: {
+  content: string;
+  unsubscribeUrl: string;
+}) {
+  const safeContent = escapeHtml(content).replace(/\r?\n/g, '<br />');
+  return `
+<!DOCTYPE html>
+<html>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9fafb;margin:0;padding:24px">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.1)">
+    <div style="background:#111827;padding:28px 32px;color:#fff">
+      <p style="margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;opacity:.75">Vitis</p>
+      <h1 style="margin:8px 0 0;font-size:24px">News, offers &amp; inspiration</h1>
+    </div>
+    <div style="padding:32px;color:#374151;font-size:16px;line-height:1.7">
+      <p style="margin:0">${safeContent}</p>
+    </div>
+    <div style="padding:20px 32px;border-top:1px solid #f0f0f0;color:#9ca3af;font-size:12px;line-height:1.5">
+      You are receiving this because you subscribed to Vitis updates.
+      <a href="${unsubscribeUrl}" style="color:#6b7280">Unsubscribe</a>
+    </div>
+  </div>
+</body>
+</html>`;
 }
 
 // ── Email templates ──────────────────────────────────────────────────────────

@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcryptjs');
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 const CATEGORIES = [
@@ -218,6 +219,26 @@ function makeProducts(categories, vendorId) {
 async function seed() {
   const client = await pool.connect();
   try {
+    const demoPassword = await bcrypt.hash('demo123', 12);
+    const demoUsers = [
+      { email: 'admin@demo.com', name: 'Admin User', role: 'admin' },
+      { email: 'vendor@demo.com', name: 'Demo Vendor', role: 'vendor' },
+      { email: 'customer@demo.com', name: 'Demo Customer', role: 'customer' },
+    ];
+
+    for (const user of demoUsers) {
+      await client.query(`
+        INSERT INTO users (email, name, password_hash, role, is_active, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, true, NOW(), NOW())
+        ON CONFLICT (email) DO UPDATE SET
+          name = EXCLUDED.name,
+          password_hash = EXCLUDED.password_hash,
+          role = EXCLUDED.role,
+          is_active = true,
+          updated_at = NOW()
+      `, [user.email, user.name, demoPassword, user.role]);
+    }
+
     // Skip seeding entirely if products already exist
     const { rows } = await client.query('SELECT COUNT(*)::int AS count FROM products');
     if (rows[0].count > 0) {

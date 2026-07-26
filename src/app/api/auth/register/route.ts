@@ -1,13 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query, queryOne } from '@/lib/db';
-import { signToken, UserPayload } from '@/lib/auth';
-import { adminAuth } from '@/lib/firebase-admin';
+import { hashPassword, signToken, UserPayload } from '@/lib/auth';
 import { cookies } from 'next/headers';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: NextRequest) {
   try {
-    const { idToken, name } = await req.json();
+    const { idToken, name, email, password } = await req.json();
+
+    if (email && password && name) {
+      const normalizedEmail = String(email).toLowerCase().trim();
+      if (String(password).length < 8) {
+        return NextResponse.json({ success: false, error: 'Password must be at least 8 characters' }, { status: 400 });
+      }
+      const existing = await queryOne('SELECT id FROM users WHERE email = $1', [normalizedEmail]);
+      if (existing) {
+        return NextResponse.json({ success: false, error: 'An account with this email already exists' }, { status: 409 });
+      }
+      const id = uuidv4();
+      await query(
+        `INSERT INTO users (id, email, name, password_hash, role, is_active, created_at)
+         VALUES ($1, $2, $3, $4, 'customer', true, NOW())`,
+        [id, normalizedEmail, String(name).trim(), await hashPassword(String(password))]
+      );
+      const payload: UserPayload = { id, email: normalizedEmail, name: String(name).trim(), role: 'customer' };
+      const token = await signToken(payload);
+      const cookieStore = await cookies();
+      cookieStore.set('auth_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+      });
+      return NextResponse.json({ success: true, user: payload }, { status: 201 });
+    }
 
     if (!idToken || !name) {
       return NextResponse.json({ success: false, error: 'ID token and name are required' }, { status: 400 });
@@ -16,17 +43,18 @@ export async function POST(req: NextRequest) {
     // Verify the Firebase ID token
     let decoded;
     try {
+      const { adminAuth } = await import('@/lib/firebase-admin');
       decoded = await adminAuth.verifyIdToken(idToken);
     } catch {
       return NextResponse.json({ success: false, error: 'Invalid or expired token' }, { status: 401 });
     }
 
-    const { uid, email } = decoded;
-    if (!email) {
+    const { uid, email: firebaseEmail } = decoded;
+    if (!firebaseEmail) {
       return NextResponse.json({ success: false, error: 'No email in token' }, { status: 400 });
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = firebaseEmail.toLowerCase().trim();
 
     // Check for an existing account
     const existing = await queryOne(

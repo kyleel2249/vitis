@@ -1,2 +1,2 @@
 - [Next.js + Replit allowedDevOrigins](nextjs-replit-dev-origins.md) — must include exact REPLIT_DEV_DOMAIN/REPLIT_DOMAINS env vars; wildcards don't work.
-- [Auth: Firebase Admin configuration](auth-dual-path.md) — imported auth routes initialize Firebase Admin at module load; missing Firebase service-account vars block production builds.
+- [Auth: dual login paths](auth-dual-path.md) — direct email/password works without Firebase; Firebase Admin is loaded only for token-based requests.

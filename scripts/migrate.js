@@ -232,6 +232,20 @@ async function migrate() {
         updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
 
+      -- Newsletter campaign audit log
+      CREATE TABLE IF NOT EXISTS newsletter_campaigns (
+        id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        subject         TEXT NOT NULL,
+        content         TEXT NOT NULL,
+        status          TEXT NOT NULL DEFAULT 'sending' CHECK (status IN ('sending','sent','partial','failed')),
+        recipient_count INT NOT NULL DEFAULT 0,
+        sent_count      INT NOT NULL DEFAULT 0,
+        failed_count    INT NOT NULL DEFAULT 0,
+        created_by      UUID REFERENCES users(id) ON DELETE SET NULL,
+        created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        completed_at    TIMESTAMPTZ
+      );
+
       -- Indexes for performance
       CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
       CREATE INDEX IF NOT EXISTS idx_products_vendor ON products(vendor_id);
@@ -247,6 +261,7 @@ async function migrate() {
       CREATE INDEX IF NOT EXISTS idx_analytics_event_type ON analytics_events(event_type);
       CREATE INDEX IF NOT EXISTS idx_analytics_created_at ON analytics_events(created_at);
       CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_active ON newsletter_subscribers(is_active);
+      CREATE INDEX IF NOT EXISTS idx_newsletter_campaigns_created_at ON newsletter_campaigns(created_at);
 
       -- Cart items (server-side persistent cart)
       CREATE TABLE IF NOT EXISTS cart_items (
