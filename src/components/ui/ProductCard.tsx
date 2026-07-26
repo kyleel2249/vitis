@@ -144,9 +144,6 @@ export default function ProductCard({ product, variant = 'default' }: Props) {
 
           {/* Info */}
           <div className="p-3">
-            {product.vendor_name && (
-              <p className="text-xs text-primary-600 font-medium mb-0.5">{product.vendor_name}</p>
-            )}
             <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors leading-snug">
               {product.name}
             </h3>

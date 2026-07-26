@@ -96,11 +96,6 @@ export default function ProductDetailClient({ product, reviews, related }: Props
 
         {/* Info */}
         <div>
-          {product.vendor_name && (
-            <Link href={`/vendor/${product.vendor_id}`} className="text-sm font-semibold text-primary-600 hover:underline mb-1 inline-block">
-              {product.vendor_name}
-            </Link>
-          )}
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight mb-3">{product.name}</h1>
 
           <div className="flex items-center gap-4 mb-4">
@@ -225,7 +220,6 @@ export default function ProductDetailClient({ product, reviews, related }: Props
               { label: 'SKU', value: product.sku },
               { label: 'Category', value: product.category_name },
               { label: 'Stock', value: `${product.stock_quantity} units` },
-              { label: 'Vendor', value: product.vendor_name || 'Vitis' },
               { label: 'Digital', value: product.is_digital ? 'Yes' : 'No' },
               { label: 'Weight', value: product.weight ? `${product.weight}kg` : 'N/A' },
             ].map(({ label, value }) => (
