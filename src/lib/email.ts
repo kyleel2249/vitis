@@ -4,6 +4,8 @@
  */
 
 async function getResendApiKey(): Promise<string> {
+  if (process.env.RESEND_API_KEY) return process.env.RESEND_API_KEY;
+
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY
     ? 'repl ' + process.env.REPL_IDENTITY
