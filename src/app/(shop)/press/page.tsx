@@ -35,7 +35,7 @@ const PRESS_RELEASES = [
   {
     date: 'July 22, 2024',
     category: 'Awards',
-    headline: 'Vitis Named to Fast Company's "World's Most Innovative Companies" List for 2024',
+    headline: `Vitis Named to Fast Company's "World's Most Innovative Companies" List for 2024`,
     summary: 'Vitis was recognised in the Retail & E-commerce category for its vendor marketplace model and buyer-protection innovations.',
   },
   {

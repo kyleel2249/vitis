@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Twitter, Facebook, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { FormEvent, useState } from 'react';
 
 const FOOTER_LINKS = {
   shop: {
@@ -60,6 +61,39 @@ const SOCIAL_LINKS = [
 const PAYMENT_METHODS = ['Visa', 'MC', 'AmEx', 'PayPal', 'ApplePay', 'GPay', 'Crypto'];
 
 export default function Footer() {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  async function handleSubscribe(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setStatus(null);
+
+    try {
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Please try again.');
+      }
+
+      setEmail('');
+      setStatus({ type: 'success', message: result.message });
+    } catch (error) {
+      setStatus({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Please try again.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <footer className="bg-gray-950 text-gray-300">
       {/* Newsletter */}
@@ -68,18 +102,38 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h3 className="text-2xl font-bold text-white">Stay in the loop</h3>
-              <p className="text-gray-400 mt-1">Get exclusive deals, new arrivals, and personalised recommendations.</p>
+               <p className="text-gray-400 mt-1">Get exclusive deals, new arrivals, and personalised recommendations.</p>
             </div>
-            <form className="flex gap-3 w-full md:w-auto" onSubmit={(e) => e.preventDefault()}>
+             <form className="w-full md:w-auto" onSubmit={handleSubscribe}>
+               <div className="flex gap-3">
               <input
                 type="email"
+                 name="email"
+                 value={email}
+                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="Enter your email"
+                 aria-label="Email address for newsletter"
+                 autoComplete="email"
+                 required
                 className="flex-1 md:w-72 px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500
                            focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
-              <button type="submit" className="btn-primary whitespace-nowrap">
-                Subscribe
+               <button type="submit" disabled={isSubmitting} className="btn-primary whitespace-nowrap">
+                 {isSubmitting ? 'Joining…' : 'Subscribe'}
               </button>
+               </div>
+               <p className="text-xs text-gray-500 mt-2">
+                 By subscribing, you agree to receive Vitis news, offers, and product updates. Unsubscribe anytime.
+               </p>
+               {status && (
+                 <p
+                   role="status"
+                   aria-live="polite"
+                   className={`text-sm mt-2 ${status.type === 'success' ? 'text-green-400' : 'text-red-400'}`}
+                 >
+                   {status.message}
+                 </p>
+               )}
             </form>
           </div>
         </div>

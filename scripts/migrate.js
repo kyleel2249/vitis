@@ -220,6 +220,18 @@ async function migrate() {
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
 
+      -- Newsletter subscriptions
+      CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+        id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        email           TEXT UNIQUE NOT NULL,
+        is_active       BOOLEAN NOT NULL DEFAULT true,
+        source          TEXT NOT NULL DEFAULT 'footer',
+        subscribed_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        unsubscribed_at TIMESTAMPTZ,
+        created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
       -- Indexes for performance
       CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
       CREATE INDEX IF NOT EXISTS idx_products_vendor ON products(vendor_id);
@@ -234,6 +246,7 @@ async function migrate() {
       CREATE INDEX IF NOT EXISTS idx_reviews_user ON reviews(user_id);
       CREATE INDEX IF NOT EXISTS idx_analytics_event_type ON analytics_events(event_type);
       CREATE INDEX IF NOT EXISTS idx_analytics_created_at ON analytics_events(created_at);
+      CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_active ON newsletter_subscribers(is_active);
 
       -- Cart items (server-side persistent cart)
       CREATE TABLE IF NOT EXISTS cart_items (
