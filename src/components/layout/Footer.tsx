@@ -190,6 +190,17 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+              <Link href="/" className="flex items-center gap-2 text-white hover:text-primary-300 transition-colors">
+                <Image
+                  src="/vitis-logo.png"
+                  alt="Vitis"
+                  width={54}
+                  height={20}
+                  className="h-5 w-auto object-contain"
+                  style={{ width: 'auto', height: '20px' }}
+                />
+                <span className="font-semibold">Vitis</span>
+              </Link>
               <span>© 2026 Vitis. All rights reserved.</span>
               <Link href="/privacy" className="hover:text-gray-300 transition-colors">Privacy Policy</Link>
               <Link href="/terms" className="hover:text-gray-300 transition-colors">Terms of Service</Link>
