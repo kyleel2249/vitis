@@ -4,7 +4,6 @@ import Link from 'next/link';
 const BRANDS = [
   { name: 'Apple', color: '#1d1d1f' },
   { name: 'Samsung', color: '#1428a0' },
-  { name: 'Nike', color: '#111' },
   { name: 'Adidas', color: '#000' },
   { name: 'Sony', color: '#000' },
   { name: 'LG', color: '#a50034' },

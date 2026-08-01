@@ -19,18 +19,6 @@ const BRANDS = [
     color: '#1d1d1f',
   },
   {
-    name: 'Nike',
-    slug: 'nike',
-    logo: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop&q=80',
-    cover: 'https://images.unsplash.com/photo-1556906781-9a412961a28c?w=800&h=300&fit=crop&q=80',
-    category: 'Sports & Fashion',
-    rating: 4.8,
-    products: 124,
-    verified: true,
-    description: 'Just do it. World-leading athletic footwear and apparel.',
-    color: '#111111',
-  },
-  {
     name: 'Sony',
     slug: 'sony',
     logo: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop&q=80',

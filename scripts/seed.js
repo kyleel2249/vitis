@@ -107,8 +107,8 @@ const PRODUCT_IMAGES = {
     'https://images.unsplash.com/photo-1504980989-a1c7c1803f33?w=600&h=600&fit=crop',
   ],
   "Running Shoes Men's Lightweight": [
-    'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=600&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=600&h=600&fit=crop',
   ],
   // Beauty & Health
   'Vitamin C Serum 20%': [

@@ -25,7 +25,7 @@ const HERO_SLIDES = [
     ctaHref: '/deals',
     badge: '⚡ Flash Sale',
     bgColor: '#7c0c20',
-    bgImage: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1600&h=900&fit=crop&q=80',
+    bgImage: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1600&h=900&fit=crop&q=80',
   },
   {
     title: 'Sell Globally Today',
