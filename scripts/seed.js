@@ -56,9 +56,9 @@ const PRODUCT_IMAGES = {
     'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&h=600&fit=crop',
     'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&h=600&fit=crop',
   ],
-  'Nike Air Max 270': [
-    'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&h=600&fit=crop',
+  'Classic Cushion Sneakers': [
+    'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&h=600&fit=crop',
+    'https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=600&h=600&fit=crop',
   ],
   'Classic Denim Jacket': [
     'https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=600&h=600&fit=crop',
@@ -162,7 +162,7 @@ function makeProducts(categories, vendorId) {
 
     // Fashion
     { name: 'Premium Leather Messenger Bag', category: 'fashion', price: 129.99, compare_price: 199.99, stock: 80, featured: true, description: 'Handcrafted full-grain leather messenger bag. Fits 15" laptops with multiple organized compartments.' },
-    { name: 'Nike Air Max 270', category: 'fashion', price: 89.99, compare_price: 150.00, stock: 200, featured: false, description: 'Lightweight and breathable upper with Max Air 270 unit for incredible underfoot cushioning.' },
+    { name: 'Classic Cushion Sneakers', category: 'fashion', price: 89.99, compare_price: 150.00, stock: 200, featured: false, description: 'Lightweight breathable upper with responsive cushioning unit for all-day comfort and support.' },
     { name: 'Classic Denim Jacket', category: 'fashion', price: 69.99, compare_price: 120.00, stock: 150, featured: false, description: 'Timeless denim jacket crafted from premium cotton denim. Classic fit with a modern touch.' },
     { name: 'Minimalist Silver Watch', category: 'fashion', price: 159.99, compare_price: 250.00, stock: 60, featured: true, description: 'Swiss-inspired minimalist timepiece with sapphire crystal glass. Water resistant to 50 meters.' },
     { name: 'Cashmere Blend Sweater', category: 'fashion', price: 89.99, compare_price: 150.00, stock: 100, featured: false, description: '70% cashmere, 30% merino wool blend. Incredibly soft with a relaxed, cozy fit.' },
