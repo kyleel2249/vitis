@@ -6,7 +6,7 @@ import { Zap, Mail, Lock, User, Eye, EyeOff, ArrowRight, Check } from 'lucide-re
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { getFirebaseAuth } from '@/lib/firebase';
 
 const BENEFITS = ['Free shipping on first order', 'Exclusive member deals', 'Order tracking & history', 'Personalised product discovery'];
 
@@ -27,6 +27,7 @@ export default function RegisterPage() {
     setLoading(true);
     try {
       // Create account in Firebase — Firebase owns the identity
+      const auth = getFirebaseAuth();
       const credential = await createUserWithEmailAndPassword(auth, form.email, form.password);
       const idToken = await credential.user.getIdToken();
 
@@ -54,6 +55,8 @@ export default function RegisterPage() {
         toast.error('Password is too weak — use at least 8 characters');
       } else if (code === 'auth/network-request-failed') {
         toast.error('Network error. Please check your connection.');
+      } else if (err?.message?.includes('Firebase is not configured')) {
+        toast.error(err.message);
       } else {
         toast.error('Registration failed. Please try again.');
       }
