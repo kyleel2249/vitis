@@ -4,10 +4,14 @@ import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { queryOne } from './db';
 
-if (!process.env.SESSION_SECRET) {
-  throw new Error('SESSION_SECRET environment variable is required but not set. Set it before starting the server.');
+/** Resolve the secret lazily so Next.js can import route modules during build-time page-data collection. */
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.SESSION_SECRET;
+  if (!secret) {
+    throw new Error('SESSION_SECRET environment variable is required for session token operations. Configure it in your deployment environment.');
+  }
+  return new TextEncoder().encode(secret);
 }
-const JWT_SECRET = new TextEncoder().encode(process.env.SESSION_SECRET);
 
 export type UserPayload = {
   id: string;
@@ -22,12 +26,13 @@ export async function signToken(payload: UserPayload): Promise<string> {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 }
 
 export async function verifyToken(token: string): Promise<UserPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    if (!process.env.SESSION_SECRET) return null;
+    const { payload } = await jwtVerify(token, getJwtSecret());
     return payload as unknown as UserPayload;
   } catch {
     return null;
