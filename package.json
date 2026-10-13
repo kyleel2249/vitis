@@ -12,9 +12,9 @@
     "db:migrate": "node scripts/migrate.js",
     "typecheck": "tsc --noEmit",
     "db:setup": "node scripts/migrate.js && node scripts/seed.js",
-    "cf:build": "IMAGES_UNOPTIMIZED=true opennextjs-cloudflare build",
-    "cf:preview": "npm run cf:build && opennextjs-cloudflare preview",
-    "cf:deploy": "npm run cf:build && wrangler deploy"
+    "cf:build": "node scripts/build-pages.mjs",
+    "cf:preview": "npm run cf:build && wrangler pages dev .open-next/pages",
+    "cf:deploy": "npm run cf:build && wrangler pages deploy .open-next/pages --project-name=vitis"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.2.2",
@@ -32,8 +32,6 @@
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
-    "firebase": "^12.16.0",
-    "firebase-admin": "^13.10.0",
     "framer-motion": "^11.18.2",
     "jose": "^5.10.0",
     "jsonwebtoken": "^9.0.2",

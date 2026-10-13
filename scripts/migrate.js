@@ -290,13 +290,8 @@ async function migrate() {
       -- Additive column migrations (idempotent)
       ALTER TABLE users ADD COLUMN IF NOT EXISTS stripe_customer_id TEXT;
       ALTER TABLE orders ADD COLUMN IF NOT EXISTS stripe_payment_intent_id TEXT;
-      ALTER TABLE users ADD COLUMN IF NOT EXISTS firebase_uid TEXT;
     `);
 
-    // Create unique index on firebase_uid if it doesn't exist
-    await client.query(`
-      CREATE UNIQUE INDEX IF NOT EXISTS idx_users_firebase_uid ON users(firebase_uid) WHERE firebase_uid IS NOT NULL;
-    `);
 
     // Indexes for cart_items
     await client.query(`

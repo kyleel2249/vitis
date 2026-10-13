@@ -43,7 +43,8 @@ A production-ready, full-stack commerce platform built with Next.js 14, TypeScri
 | Charts | Recharts |
 | Backend | Next.js API Routes |
 | Database | PostgreSQL (Replit managed) |
-| Auth | JWT (jose) + bcrypt |
+| Auth | JWT (jose) + bcrypt (email/password) |
+| Hosting | Cloudflare Pages (OpenNext adapter) |
 | Icons | Lucide React |
 
 ## 📁 Project Structure
@@ -113,7 +114,7 @@ npm run db:seed      # Seed demo data
 |----------|-------------|
 | `DATABASE_URL` | PostgreSQL connection string |
 | `SESSION_SECRET` | JWT signing secret (required) |
-| `STRIPE_*`, `RESEND_API_KEY`, `ADMIN_*` | See `.env.example` / `DEPLOYMENT.md` |
+| `STRIPE_*`, `RESEND_API_KEY`, `ADMIN_*` | See `.env.example` / `DEPLOYMENT.md` (Cloudflare Pages) |
 
 ## 🏛 Architecture
 

@@ -11,9 +11,6 @@ const allowedDevOrigins = [
 ];
 
 const nextConfig = {
-  // 'standalone' produces a minimal self-contained server (used by the Dockerfile).
-  // Set NEXT_OUTPUT=standalone in the build environment to enable it.
-  ...(process.env.NEXT_OUTPUT === 'standalone' ? { output: 'standalone' } : {}),
   poweredByHeader: false,
   images: {
     remotePatterns: [

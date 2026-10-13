@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import { Zap, Mail, Lock, User, Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirebaseAuth } from '@/lib/firebase';
 
 const BENEFITS = ['Free shipping on first order', 'Exclusive member deals', 'Order tracking & history', 'Personalised product discovery'];
 
@@ -26,16 +24,10 @@ export default function RegisterPage() {
     if (!agree) { toast.error('Please accept the terms'); return; }
     setLoading(true);
     try {
-      // Create account in Firebase — Firebase owns the identity
-      const auth = getFirebaseAuth();
-      const credential = await createUserWithEmailAndPassword(auth, form.email, form.password);
-      const idToken = await credential.user.getIdToken();
-
-      // Create the user record in our database and issue a session cookie
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken, name: form.name }),
+        body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
       });
       const data = await res.json();
       if (data.success) {
@@ -43,23 +35,10 @@ export default function RegisterPage() {
         router.push('/');
         router.refresh();
       } else {
-        // DB registration failed — delete the Firebase account to stay in sync
-        await credential.user.delete();
         toast.error(data.error || 'Registration failed');
       }
-    } catch (err: any) {
-      const code = err?.code || '';
-      if (code === 'auth/email-already-in-use') {
-        toast.error('An account with this email already exists');
-      } else if (code === 'auth/weak-password') {
-        toast.error('Password is too weak — use at least 8 characters');
-      } else if (code === 'auth/network-request-failed') {
-        toast.error('Network error. Please check your connection.');
-      } else if (err?.message?.includes('Firebase is not configured')) {
-        toast.error(err.message);
-      } else {
-        toast.error('Registration failed. Please try again.');
-      }
+    } catch {
+      toast.error('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }

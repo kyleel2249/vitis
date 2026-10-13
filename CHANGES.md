@@ -24,3 +24,9 @@ Nothing was removed; Replit-specific paths were kept as fallbacks.
 - `create-payment-intent` and order totals still come from the client cart (amount is bound to the payment, but prices are not re-derived from the DB).
 - `.replit` is committed and contains the Firebase public config and service-account email; rotate if that project is shared.
 - `npm audit` was not run (registry audit disabled in `.npmrc`).
+
+## Cloudflare Pages-only revision
+- **Firebase removed** (per request): `src/lib/firebase.ts`, `src/lib/firebase-admin.ts`, the `firebase` / `firebase-admin` dependencies, the Firebase env vars (`.env.example`, `.replit`) and the `firebase_uid` migration. Login and registration are email/password only. The register page previously *required* Firebase; it now calls `/api/auth/register` directly.
+- **Cloudflare-only**: Dockerfile, `.dockerignore` and the standalone output switch removed. Pages build: `scripts/build-pages.mjs` (`npm run cf:build`) → `.open-next/pages` (`_worker.js` + assets + `_routes.json`); `wrangler.jsonc` is now a valid *Pages* config (`pages_build_output_dir`).
+- Existing databases keep an unused `users.firebase_uid` column; it is harmless and can be dropped manually.
+- Firebase public config remains in git history from before this change.
