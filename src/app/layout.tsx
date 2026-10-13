@@ -6,7 +6,10 @@ import './globals.css';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:5000';
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: 'Vitis — The Commerce Platform',
     template: '%s | Vitis',
@@ -18,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://commerceos.app',
+    url: SITE_URL,
     siteName: 'Vitis',
     title: 'Vitis — Commerce Platform',
     description: 'The future of commerce is here.',
@@ -30,7 +33,7 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.ico',
+    icon: [{ url: '/favicon.png', type: 'image/png' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }],
     apple: '/apple-touch-icon.png',
   },
 };

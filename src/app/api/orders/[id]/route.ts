@@ -3,7 +3,8 @@ import { queryOne } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { sendEmail, shippingUpdateHtml } from '@/lib/email';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
     const session = await getSession();
     if (!session) {
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       LEFT JOIN order_items oi ON oi.order_id = o.id
       WHERE o.id = $1 ${isAdmin ? '' : 'AND o.user_id = $2'}
       GROUP BY o.id, u.name, u.email
-    `, isAdmin ? [params.id] : [params.id, session.id]);
+    `, isAdmin ? [id] : [id, session.id]);
 
     if (!order) {
       return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 });
@@ -31,7 +32,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
     const session = await getSession();
     if (!session) {
@@ -68,7 +70,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     updates.push(`updated_at = NOW()`);
-    values.push(params.id);
+    values.push(id);
 
     const order = await queryOne(
       `UPDATE orders SET ${updates.join(', ')} WHERE id = $${idx} RETURNING *`,

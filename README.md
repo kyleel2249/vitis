@@ -1,4 +1,6 @@
-# CommerceOS — AI-Powered Commerce Operating System
+# Vitis (CommerceOS) — AI-Powered Commerce Platform
+
+> Deployment: see [DEPLOYMENT.md](DEPLOYMENT.md). Environment template: [.env.example](.env.example).
 
 A production-ready, full-stack commerce platform built with Next.js 14, TypeScript, Tailwind CSS, and PostgreSQL.
 
@@ -109,8 +111,9 @@ npm run db:seed      # Seed demo data
 
 | Variable | Description |
 |----------|-------------|
-| `DATABASE_URL` | PostgreSQL connection string (auto-set by Replit) |
-| `SESSION_SECRET` | JWT signing secret |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `SESSION_SECRET` | JWT signing secret (required) |
+| `STRIPE_*`, `RESEND_API_KEY`, `ADMIN_*` | See `.env.example` / `DEPLOYMENT.md` |
 
 ## 🏛 Architecture
 

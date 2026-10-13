@@ -3,6 +3,7 @@ import { query, transaction } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { v4 as uuidv4 } from 'uuid';
 import { sendEmail, orderConfirmationHtml } from '@/lib/email';
+import { getUncachableStripeClient } from '@/lib/stripeClient';
 
 export async function GET(req: NextRequest) {
   try {
@@ -54,14 +55,37 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { items, shipping_address, shipping_method, subtotal, shipping_cost, tax, total, order_number, stripe_payment_intent_id, payment_status: paymentStatus } = body;
+    const { items, shipping_address, shipping_method, subtotal, shipping_cost, tax, total, order_number, stripe_payment_intent_id } = body;
 
     const session = await getSession();
     // Allow guest checkout
     const userId = session?.id;
 
     const orderId = uuidv4();
-    const guestUserId = userId || 'guest-' + Date.now();
+
+    // Never trust a client-supplied payment status: confirm it with Stripe.
+    let verifiedPaymentStatus = 'pending';
+    if (stripe_payment_intent_id) {
+      const stripe = await getUncachableStripeClient();
+      const intent = await stripe.paymentIntents.retrieve(String(stripe_payment_intent_id));
+      if (Math.round(Number(total) * 100) !== intent.amount) {
+        return NextResponse.json(
+          { success: false, error: 'Order total does not match the payment amount' },
+          { status: 400 }
+        );
+      }
+      const reused = await query(
+        'SELECT 1 FROM orders WHERE stripe_payment_intent_id = $1 LIMIT 1',
+        [intent.id]
+      );
+      if (reused.length > 0) {
+        return NextResponse.json(
+          { success: false, error: 'This payment has already been used for an order' },
+          { status: 409 }
+        );
+      }
+      verifiedPaymentStatus = intent.status === 'succeeded' ? 'paid' : 'pending';
+    }
 
     await transaction(async (client) => {
       // Create guest user if needed
@@ -78,7 +102,7 @@ export async function POST(req: NextRequest) {
       }
 
       // Create order
-      const resolvedPaymentStatus = paymentStatus || 'pending';
+      const resolvedPaymentStatus = verifiedPaymentStatus;
       const resolvedStatus = resolvedPaymentStatus === 'paid' ? 'confirmed' : 'pending';
       await client.query(`
         INSERT INTO orders (id, order_number, user_id, status, payment_status, subtotal, shipping_cost, tax, total, currency, shipping_address, stripe_payment_intent_id, created_at)

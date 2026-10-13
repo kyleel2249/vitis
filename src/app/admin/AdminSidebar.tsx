@@ -8,8 +8,7 @@ import {
   TrendingUp, CreditCard, Truck, MessageSquare, Star, Globe, Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { signOutFirebase } from '@/lib/firebase';
 
 const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -39,7 +38,7 @@ export default function AdminSidebar({ userName, userEmail }: AdminSidebarProps)
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
-    await signOut(auth);
+    await signOutFirebase();
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/');
     router.refresh();

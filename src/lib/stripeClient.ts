@@ -1,11 +1,25 @@
 import Stripe from 'stripe';
-import { StripeSync } from 'stripe-replit-sync';
+
+type StripeCredentials = { secretKey: string; publishableKey: string; webhookSecret?: string };
 
 /**
- * Fetches Stripe credentials from the Replit connection API.
- * Not cached — tokens can rotate, so fetch fresh each time.
+ * Credential resolution order:
+ *  1. Standard environment variables (works on Cloudflare, Docker, Vercel, any host)
+ *     STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY (or NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY), STRIPE_WEBHOOK_SECRET
+ *  2. Replit connector API (kept so the original Replit workflow still works)
+ * Not cached — the Replit path can rotate tokens.
  */
-async function getStripeCredentials(): Promise<{ secretKey: string; publishableKey: string; webhookSecret?: string }> {
+export async function getStripeCredentials(): Promise<StripeCredentials> {
+  const envSecret = process.env.STRIPE_SECRET_KEY;
+  if (envSecret) {
+    return {
+      secretKey: envSecret,
+      publishableKey:
+        process.env.STRIPE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '',
+      webhookSecret: process.env.STRIPE_WEBHOOK_SECRET,
+    };
+  }
+
   const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
   const xReplitToken = process.env.REPL_IDENTITY
     ? 'repl ' + process.env.REPL_IDENTITY
@@ -15,8 +29,8 @@ async function getStripeCredentials(): Promise<{ secretKey: string; publishableK
 
   if (!hostname || !xReplitToken) {
     throw new Error(
-      'Missing Replit environment variables. ' +
-        'Ensure the Stripe integration is connected via the Integrations tab.'
+      'Stripe is not configured. Set STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY and STRIPE_WEBHOOK_SECRET ' +
+        '(or connect Stripe through the Replit Integrations tab).'
     );
   }
 
@@ -36,10 +50,7 @@ async function getStripeCredentials(): Promise<{ secretKey: string; publishableK
   const settings = data.items?.[0]?.settings;
 
   if (!settings?.secret_key) {
-    throw new Error(
-      'Stripe integration not connected or missing secret key. ' +
-        'Connect Stripe via the Integrations tab first.'
-    );
+    throw new Error('Stripe integration not connected or missing secret key. Connect Stripe via the Integrations tab first.');
   }
 
   return {
@@ -49,37 +60,37 @@ async function getStripeCredentials(): Promise<{ secretKey: string; publishableK
   };
 }
 
-/**
- * Returns a fresh authenticated Stripe client.
- * Not cached — fetches credentials on every call so rotated keys are picked up.
- */
+/** Returns an authenticated Stripe client. */
 export async function getUncachableStripeClient(): Promise<Stripe> {
   const { secretKey } = await getStripeCredentials();
   return new Stripe(secretKey);
 }
 
-/**
- * Returns the Stripe publishable key (safe to expose to the browser).
- */
+/** Returns the Stripe publishable key (safe to expose to the browser). */
 export async function getStripePublishableKey(): Promise<string> {
   const { publishableKey } = await getStripeCredentials();
   return publishableKey;
 }
 
 /**
- * Returns a fresh StripeSync instance for webhook processing and data sync.
- * Not cached — fetches credentials on every call so rotated keys are picked up.
+ * Returns a StripeSync instance (Replit-managed Stripe data sync + webhook processing).
+ * Loaded dynamically so hosts without the Replit connector never load the package.
+ * Only available on Replit; elsewhere webhooks are verified directly (see webhook route).
  */
-export async function getStripeSync(): Promise<StripeSync> {
+export async function getStripeSync() {
   const databaseUrl = process.env.DATABASE_URL;
-  if (!databaseUrl) {
-    throw new Error('DATABASE_URL environment variable is required');
-  }
+  if (!databaseUrl) throw new Error('DATABASE_URL environment variable is required');
 
+  const { StripeSync } = await import('stripe-replit-sync');
   const { secretKey, webhookSecret } = await getStripeCredentials();
   return new StripeSync({
     poolConfig: { connectionString: databaseUrl },
     stripeSecretKey: secretKey,
     stripeWebhookSecret: webhookSecret ?? '',
   });
+}
+
+/** True when the Replit connector (not plain env vars) is the credential source. */
+export function isReplitStripe(): boolean {
+  return !process.env.STRIPE_SECRET_KEY && !!process.env.REPLIT_CONNECTORS_HOSTNAME;
 }

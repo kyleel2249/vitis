@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
+import { verifyToken } from '@/lib/auth';
 import AdminSidebar from './AdminSidebar';
 import AdminTopBar from './AdminTopBar';
 
@@ -8,13 +8,8 @@ async function getAdminSession() {
   const cookieStore = await cookies();
   const token = cookieStore.get('auth_token')?.value;
   if (!token) return null;
-  try {
-    const secret = new TextEncoder().encode(process.env.SESSION_SECRET);
-    const { payload } = await jwtVerify(token, secret);
-    return payload as { id: string; email: string; name: string; role: string };
-  } catch {
-    return null;
-  }
+  // verifyToken returns null when SESSION_SECRET is unset (never falls back to a guessable key)
+  return (await verifyToken(token)) as { id: string; email: string; name: string; role: string } | null;
 }
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

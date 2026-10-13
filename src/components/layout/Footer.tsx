@@ -153,7 +153,7 @@ export default function Footer() {
             <div className="space-y-2 text-sm text-gray-400">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-gray-500" />
-                <span>support@commerceos.app</span>
+                <span>{process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@commerceos.app'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-gray-500" />

@@ -13,8 +13,7 @@ import { useCart } from '@/lib/cart';
 import { useWishlist } from '@/lib/wishlist';
 import { cn } from '@/lib/utils';
 import { PRODUCT_CATEGORIES } from '@/lib/utils';
-import { signOut } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { signOutFirebase } from '@/lib/firebase';
 
 const NAV_LINKS = [
   { label: 'New Arrivals', href: '/products?sort=newest' },
@@ -102,7 +101,7 @@ export default function Header() {
 
   const handleLogout = async () => {
     setUserOpen(false);
-    await signOut(auth);
+    await signOutFirebase();
     await fetch('/api/auth/logout', { method: 'POST' });
     // Clear local cart and wishlist so the next user on this device starts fresh
     // (their data is safely persisted on the server)

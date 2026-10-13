@@ -2,6 +2,8 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, MessageCircle, Clock, Send, CheckCircle, ChevronDown } from 'lucide-react';
 
+const SUPPORT_EMAIL = process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@commerceos.app';
+
 const SUBJECTS = [
   'Order issue',
   'Return or refund',
@@ -152,7 +154,7 @@ export default function ContactPage() {
               <h3 className="font-bold text-gray-900 mb-4">Get in touch</h3>
               <div className="space-y-4">
                 {[
-                  { icon: Mail, label: 'Email', value: 'support@commerceos.app', href: 'mailto:support@commerceos.app' },
+                  { icon: Mail, label: 'Email', value: SUPPORT_EMAIL, href: `mailto:${SUPPORT_EMAIL}` },
                   { icon: Phone, label: 'Phone', value: '1-800-COMMERCE', href: 'tel:18002666373' },
                   { icon: MapPin, label: 'Address', value: 'San Francisco, CA', href: null },
                 ].map(({ icon: Icon, label, value, href }) => (

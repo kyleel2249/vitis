@@ -1,7 +1,14 @@
 const { Pool } = require('pg');
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcryptjs');
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const dbUrl = process.env.DATABASE_URL || '';
+const useSsl = process.env.DATABASE_SSL
+  ? process.env.DATABASE_SSL === 'true'
+  : /sslmode=(require|verify-full|verify-ca)/i.test(dbUrl);
+const pool = new Pool({
+  connectionString: dbUrl,
+  ssl: useSsl ? { rejectUnauthorized: false } : undefined,
+});
 
 const CATEGORIES = [
   { id: uuidv4(), name: 'Electronics', slug: 'electronics', icon: '💻', color: '#3b5bf5', sort_order: 1 },
@@ -219,24 +226,54 @@ function makeProducts(categories, vendorId) {
 async function seed() {
   const client = await pool.connect();
   try {
-    const demoPassword = await bcrypt.hash('demo123', 12);
-    const demoUsers = [
-      { email: 'admin@demo.com', name: 'Admin User', role: 'admin' },
-      { email: 'vendor@demo.com', name: 'Demo Vendor', role: 'vendor' },
-      { email: 'customer@demo.com', name: 'Demo Customer', role: 'customer' },
-    ];
+    // ── Accounts ─────────────────────────────────────────────────────────────
+    // Demo accounts (known password) are for development only. In production they are
+    // created ONLY when SEED_DEMO_USERS=true. A real admin is bootstrapped from
+    // ADMIN_EMAIL + ADMIN_PASSWORD (min 8 chars) whenever both are set.
+    const isProd = process.env.NODE_ENV === 'production';
+    const seedDemo = process.env.SEED_DEMO_USERS
+      ? process.env.SEED_DEMO_USERS === 'true'
+      : !isProd;
 
-    for (const user of demoUsers) {
+    if (seedDemo) {
+      const demoPassword = await bcrypt.hash('demo123', 12);
+      const demoUsers = [
+        { email: 'admin@demo.com', name: 'Admin User', role: 'admin' },
+        { email: 'vendor@demo.com', name: 'Demo Vendor', role: 'vendor' },
+        { email: 'customer@demo.com', name: 'Demo Customer', role: 'customer' },
+      ];
+      for (const user of demoUsers) {
+        await client.query(`
+          INSERT INTO users (email, name, password_hash, role, is_active, created_at, updated_at)
+          VALUES ($1, $2, $3, $4, true, NOW(), NOW())
+          ON CONFLICT (email) DO UPDATE SET
+            name = EXCLUDED.name,
+            password_hash = EXCLUDED.password_hash,
+            role = EXCLUDED.role,
+            is_active = true,
+            updated_at = NOW()
+        `, [user.email, user.name, demoPassword, user.role]);
+      }
+      console.log('👤 Demo accounts ready (admin/vendor/customer @demo.com).');
+    } else {
+      console.log('ℹ️  Demo accounts skipped (production). Set SEED_DEMO_USERS=true to enable.');
+    }
+
+    if (process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD) {
+      if (process.env.ADMIN_PASSWORD.length < 8) {
+        throw new Error('ADMIN_PASSWORD must be at least 8 characters');
+      }
+      const adminHash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
       await client.query(`
         INSERT INTO users (email, name, password_hash, role, is_active, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, true, NOW(), NOW())
+        VALUES ($1, $2, $3, 'admin', true, NOW(), NOW())
         ON CONFLICT (email) DO UPDATE SET
-          name = EXCLUDED.name,
           password_hash = EXCLUDED.password_hash,
-          role = EXCLUDED.role,
+          role = 'admin',
           is_active = true,
           updated_at = NOW()
-      `, [user.email, user.name, demoPassword, user.role]);
+      `, [process.env.ADMIN_EMAIL.toLowerCase().trim(), process.env.ADMIN_NAME || 'Administrator', adminHash]);
+      console.log('🔐 Admin account ready for ' + process.env.ADMIN_EMAIL);
     }
 
     // Skip seeding entirely if products already exist

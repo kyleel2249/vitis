@@ -1,6 +1,13 @@
 const { Pool } = require('pg');
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const dbUrl = process.env.DATABASE_URL || '';
+const useSsl = process.env.DATABASE_SSL
+  ? process.env.DATABASE_SSL === 'true'
+  : /sslmode=(require|verify-full|verify-ca)/i.test(dbUrl);
+const pool = new Pool({
+  connectionString: dbUrl,
+  ssl: useSsl ? { rejectUnauthorized: false } : undefined,
+});
 
 async function migrate() {
   const client = await pool.connect();

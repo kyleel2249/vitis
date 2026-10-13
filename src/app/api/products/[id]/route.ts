@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { queryOne } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
     const product = await queryOne(`
       SELECT p.*, 
@@ -16,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       LEFT JOIN reviews r ON r.product_id = p.id
       WHERE p.id = $1 AND p.is_active = true
       GROUP BY p.id, c.name, c.slug, v.store_name
-    `, [params.id]);
+    `, [id]);
 
     if (!product) {
       return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
@@ -34,7 +35,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
     const session = await getSession();
     if (!session) {
@@ -56,21 +58,22 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
       }
       const product = await queryOne(
         'SELECT id FROM products WHERE id = $1 AND vendor_id = $2',
-        [params.id, vendorId]
+        [id, vendorId]
       );
       if (!product) {
         return NextResponse.json({ success: false, error: 'Product not found or access denied' }, { status: 403 });
       }
     }
     // Soft-delete: deactivate rather than hard-delete so order history remains intact
-    await queryOne('UPDATE products SET is_active = false, updated_at = NOW() WHERE id = $1', [params.id]);
+    await queryOne('UPDATE products SET is_active = false, updated_at = NOW() WHERE id = $1', [id]);
     return NextResponse.json({ success: true });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
     // Require authentication
     const session = await getSession();
@@ -98,7 +101,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
       const product = await queryOne(
         'SELECT id FROM products WHERE id = $1 AND vendor_id = $2',
-        [params.id, vendorId]
+        [id, vendorId]
       );
       if (!product) {
         return NextResponse.json({ success: false, error: 'Product not found or access denied' }, { status: 403 });
@@ -132,7 +135,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     updates.push(`updated_at = NOW()`);
-    values.push(params.id);
+    values.push(id);
 
     const product = await queryOne(
       `UPDATE products SET ${updates.join(', ')} WHERE id = $${idx} RETURNING *`,
