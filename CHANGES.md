@@ -16,6 +16,10 @@ Nothing was removed; Replit-specific paths were kept as fallbacks.
 | `public/*`, `layout.tsx`, `manifest.json` | Missing favicon/icons/apple-touch (404s), stale CommerceOS branding, hard-coded `commerceos.app`. Icons generated from the Vitis logo; URL/email now env-driven. |
 | `Dockerfile`, `.dockerignore`, `.env.example`, `DEPLOYMENT.md`, `package.json` | Added deployment assets; `start` honours `$PORT`; Node engine pinned. |
 
+| `src/lib/firebase-admin.ts` | `firebase-admin` could not be bundled for Cloudflare. Token verification reimplemented with `jose` (same `adminAuth.verifyIdToken` API). |
+| `src/lib/db.ts` | Workers cannot share sockets across requests (second request hung). Per-query connections on Workers, pool elsewhere. |
+| `open-next.config.ts`, `wrangler.jsonc`, `package.json` (`cf:*` scripts) | Cloudflare Workers deployment added and verified locally on workerd. |
+
 ## Known remaining items
 - `create-payment-intent` and order totals still come from the client cart (amount is bound to the payment, but prices are not re-derived from the DB).
 - `.replit` is committed and contains the Firebase public config and service-account email; rotate if that project is shared.

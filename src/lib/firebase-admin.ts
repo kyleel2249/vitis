@@ -1,60 +1,42 @@
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
-import { getAuth } from 'firebase-admin/auth';
+import { createRemoteJWKSet, jwtVerify } from 'jose';
 
 /**
- * Parse the Firebase private key robustly.
- * Handles the common case where Replit stores the key with literal \n sequences
- * instead of actual newline characters, and strips any accidental wrapping quotes.
+ * Firebase ID-token verification implemented with `jose` + Google's public keys.
+ *
+ * Replaces the firebase-admin SDK for the only thing this app uses it for
+ * (verifyIdToken). It runs on Node AND on Cloudflare Workers, needs only the
+ * project id (no service-account private key), and keeps the same
+ * `adminAuth.verifyIdToken(idToken)` API the login/register routes already call.
  */
-function parsePrivateKey(raw: string): string {
-  // Strip surrounding quotes if the user accidentally included them
-  let key = raw.trim().replace(/^["']|["']$/g, '');
+const JWKS = createRemoteJWKSet(
+  new URL('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com')
+);
 
-  // Replace literal \n (two chars) with actual newlines — the most common issue
-  // when copying the private_key value out of the Firebase JSON file
-  key = key.replace(/\\n/g, '\n');
-
-  // If the key is still a single line with no newlines but contains the PEM markers,
-  // it may have been stored with spaces instead of newlines — reconstruct it
-  if (!key.includes('\n') && key.includes('-----')) {
-    const headerMatch = key.match(/(-----BEGIN [^-]+-----)/);
-    const footerMatch = key.match(/(-----END [^-]+-----)/);
-    const bodyMatch  = key.match(/-----BEGIN [^-]+-----([A-Za-z0-9+/=\s]+)-----END/);
-    if (headerMatch && footerMatch && bodyMatch) {
-      const body = bodyMatch[1].replace(/\s+/g, '').match(/.{1,64}/g)?.join('\n') ?? bodyMatch[1];
-      key = `${headerMatch[1]}\n${body}\n${footerMatch[1]}\n`;
-    }
+function getProjectId(): string {
+  const id = process.env.FIREBASE_PROJECT_ID || process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+  if (!id) {
+    throw new Error('Firebase project id is missing. Set FIREBASE_PROJECT_ID (or NEXT_PUBLIC_FIREBASE_PROJECT_ID).');
   }
-
-  return key;
+  return id;
 }
 
-function initAdmin() {
-  if (getApps().length > 0) return getAuth();
+export type DecodedFirebaseToken = {
+  uid: string;
+  email?: string;
+  email_verified?: boolean;
+  name?: string;
+  [claim: string]: unknown;
+};
 
-  const rawKey = process.env.FIREBASE_PRIVATE_KEY;
-  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const projectId   = process.env.FIREBASE_PROJECT_ID;
-
-  if (!projectId || !clientEmail || !rawKey) {
-    throw new Error(
-      'Firebase Admin env vars are missing. Required: FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY'
-    );
-  }
-
-  const privateKey = parsePrivateKey(rawKey);
-
-  try {
-    initializeApp({ credential: cert({ projectId, clientEmail, privateKey }) });
-  } catch (err: any) {
-    throw new Error(
-      `Firebase Admin failed to initialize — the private key could not be parsed. ` +
-      `Make sure you copied the full "private_key" value (including -----BEGIN PRIVATE KEY----- and -----END PRIVATE KEY-----) ` +
-      `from the Firebase service account JSON. Original error: ${err.message}`
-    );
-  }
-
-  return getAuth();
-}
-
-export const adminAuth = initAdmin();
+export const adminAuth = {
+  async verifyIdToken(idToken: string): Promise<DecodedFirebaseToken> {
+    const projectId = getProjectId();
+    const { payload } = await jwtVerify(idToken, JWKS, {
+      issuer: `https://securetoken.google.com/${projectId}`,
+      audience: projectId,
+      algorithms: ['RS256'],
+    });
+    if (!payload.sub) throw new Error('Firebase token has no subject');
+    return { ...payload, uid: payload.sub } as DecodedFirebaseToken;
+  },
+};

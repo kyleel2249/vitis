@@ -32,3 +32,8 @@ Thumbs.db
 .replit
 replit.nix
 .upm/
+
+# Cloudflare / OpenNext
+.open-next/
+.wrangler/
+.dev.vars

@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Pool, Client } from 'pg';
 
 declare global {
   var _pgPool: Pool | undefined;
@@ -34,6 +34,28 @@ function createPool() {
   });
 }
 
+/**
+ * Cloudflare Workers cannot share I/O objects (sockets) between requests, so a
+ * long-lived pool hangs the second request. On Workers we open a short-lived
+ * connection per call instead (point DATABASE_URL at Hyperdrive/a pooler there).
+ */
+const isWorkers =
+  typeof navigator !== 'undefined' && (navigator as any).userAgent === 'Cloudflare-Workers';
+
+async function withClient<T>(fn: (client: Client) => Promise<T>): Promise<T> {
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: sslConfig(),
+    connectionTimeoutMillis: 10000,
+  });
+  await client.connect();
+  try {
+    return await fn(client);
+  } finally {
+    await client.end().catch(() => {});
+  }
+}
+
 function getPool(): Pool {
   if (!globalThis._pgPool) globalThis._pgPool = createPool();
   return globalThis._pgPool;
@@ -51,6 +73,9 @@ const pool = new Proxy({} as Pool, {
 export default pool;
 
 export async function query<T = any>(text: string, params?: any[]): Promise<T[]> {
+  if (isWorkers) {
+    return withClient(async (c) => (await c.query(text, params)).rows as T[]);
+  }
   const result = await getPool().query(text, params);
   return result.rows as T[];
 }
@@ -61,6 +86,19 @@ export async function queryOne<T = any>(text: string, params?: any[]): Promise<T
 }
 
 export async function transaction<T>(fn: (client: any) => Promise<T>): Promise<T> {
+  if (isWorkers) {
+    return withClient(async (client) => {
+      try {
+        await client.query('BEGIN');
+        const result = await fn(client);
+        await client.query('COMMIT');
+        return result;
+      } catch (e) {
+        await client.query('ROLLBACK').catch(() => {});
+        throw e;
+      }
+    });
+  }
   const client = await getPool().connect();
   try {
     await client.query('BEGIN');

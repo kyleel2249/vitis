@@ -1,0 +1,4 @@
+# Local Workers preview (npm run cf:preview). Copy to .dev.vars — never commit .dev.vars.
+DATABASE_URL=postgres://user:password@host:5432/dbname?sslmode=require
+SESSION_SECRET=change-me
+NEXT_PUBLIC_SITE_URL=http://127.0.0.1:8787

@@ -51,11 +51,33 @@ Unchanged: the **Start App** workflow still works; Stripe/Resend fall back to th
 Dashboard → Developers → Webhooks → add `https://your-domain.com/api/stripe/webhook` with events
 `payment_intent.succeeded` and `payment_intent.payment_failed`; put the signing secret in `STRIPE_WEBHOOK_SECRET`.
 
-## 5. Cloudflare
-Cloudflare DNS/CDN/proxy in front of any option above works as-is. Running the app **on Cloudflare Workers/Pages**
-(OpenNext) was tested and currently fails at bundling (`firebase-admin` → `jwks-rsa` cannot resolve `jose`), and
-`pg` TCP/`sharp` need Workers-specific setup (Hyperdrive, `IMAGES_UNOPTIMIZED=true`). Use a Node host for the app
-and Cloudflare as the edge until that migration is done deliberately.
+## 5. Cloudflare Workers (OpenNext) — verified build
+The app builds with `@opennextjs/cloudflare` and was run locally on the Workers runtime (workerd) against Postgres:
+home, product pages, `/api/products`, login, `/api/auth/me`, `/api/cart/sync` and `/admin` all returned correctly.
+Worker size is ~1.8 MiB gzipped (fits the free plan's 3 MiB limit).
+
+**Use a Workers project, not a Pages project.** Cloudflare Pages treats the `.next` folder as static files and fails with
+"Pages only supports files up to 25 MiB" (the webpack cache); it also cannot run the API/database. Create it with
+Workers & Pages → Create → **Import a repository** (Workers Builds), then set:
+
+| Setting | Value |
+|---|---|
+| Build command | `npm run cf:build` |
+| Deploy command | `npx wrangler deploy` |
+| Root directory | `/` |
+| Build variables | `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPPORT_EMAIL`, `NEXT_PUBLIC_FIREBASE_*` |
+| Runtime secrets (Settings → Variables and Secrets) | `DATABASE_URL`, `SESSION_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_PUBLISHABLE_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, `FIREBASE_PROJECT_ID` |
+
+Notes:
+- Database: use a hosted Postgres reachable from Cloudflare (Neon, Supabase, RDS…). On Workers the app opens one short-lived
+  connection per query (a shared pool hangs across requests); for heavy traffic put Hyperdrive or a pooled connection string
+  (e.g. Neon pooler) in `DATABASE_URL`. Run `npm run db:migrate` / `db:seed` once from your machine.
+- Firebase sign-in tokens are now verified with `jose` + Google's public keys (no `firebase-admin`, no private key needed;
+  only `FIREBASE_PROJECT_ID`). Same behaviour, runs on Workers and Node.
+- Images are served unoptimized on Workers (`IMAGES_UNOPTIMIZED=true` is set by `cf:build`).
+- Local preview: copy `.dev.vars.example` to `.dev.vars`, then `npm run cf:preview`.
+- Not tested here: live TLS to a managed Postgres from real Cloudflare edge, Stripe webhooks on Workers, Resend email.
+  Run the checklist below after the first deploy.
 
 ## 6. Post-deploy checklist
 - `/` loads, `/api/products` returns data, `/auth/login` signs in the admin, `/admin` opens.
